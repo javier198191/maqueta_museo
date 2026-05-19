@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>MAMB Kids - Laboratorio de IA</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght=400;500;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    
+    <!-- Scripts de TensorFlow y Teachable Machine -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+
+    <script id="tailwind-config">
+          tailwind.config = {
+            darkMode: "class",
+            theme: {
+              extend: {
+                "colors": {
+                        "on-primary-fixed-variant": "#004c6b",
+                        "tertiary": "#735c00",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#3e4850",
+                        "surface-container-low": "#f3f3f4",
+                        "surface-bright": "#f9f9f9",
+                        "secondary-fixed": "#ffdbce",
+                        "surface-container-highest": "#e2e2e2",
+                        "on-surface": "#1a1c1c",
+                        "primary": "#00658d",
+                        "background": "#f9f9f9",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#bdc8d1",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#370e00",
+                        "outline": "#6e7881",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#4f3e00",
+                        "surface-container": "#eeeeee",
+                        "primary-fixed": "#c6e7ff",
+                        "surface-container-high": "#e8e8e8",
+                        "surface-dim": "#dadada",
+                        "secondary-container": "#fd661d",
+                        "primary-container": "#00a3e0",
+                        "on-secondary-container": "#571a00",
+                        "on-background": "#1a1c1c",
+                        "surface-variant": "#e2e2e2",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#241a00",
+                        "inverse-surface": "#2f3131",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed-dim": "#81cfff",
+                        "surface-tint": "#00658d",
+                        "surface": "#f9f9f9",
+                        "tertiary-fixed-dim": "#f0c100",
+                        "on-tertiary-fixed-variant": "#574500",
+                        "inverse-on-surface": "#f0f1f1",
+                        "on-error": "#ffffff",
+                        "secondary-fixed-dim": "#ffb599",
+                        "on-primary-fixed": "#001e2d",
+                        "on-secondary-fixed-variant": "#7f2b00",
+                        "tertiary-fixed": "#ffe089",
+                        "inverse-primary": "#81cfff",
+                        "on-primary-container": "#00354b",
+                        "tertiary-container": "#d0a700",
+                        "secondary": "#a73a00"
+                },
+                "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                },
+                "spacing": {
+                        "gutter": "24px",
+                        "container-margin": "32px",
+                        "lg": "48px",
+                        "sm": "12px",
+                        "unit": "8px",
+                        "xl": "80px",
+                        "md": "24px",
+                        "xs": "4px"
+                },
+                "fontFamily": {
+                        "body-lg": [
+                                "Plus Jakarta Sans"
+                        ],
+                        "label-bold": [
+                                "Plus Jakarta Sans"
+                        ],
+                        "headline-xl": [
+                                "Plus Jakarta Sans"
+                        ],
+                        "body-md": [
+                                "Plus Jakarta Sans"
+                        ],
+                        "headline-md": [
+                                "Plus Jakarta Sans"
+                        ],
+                        "headline-lg": [
+                                "Plus Jakarta Sans"
+                        ]
+                },
+                "fontSize": {
+                        "body-lg": [
+                                "18px",
+                                {
+                                        "lineHeight": "1.6",
+                                        "fontWeight": "500"
+                                }
+                        ],
+                        "label-bold": [
+                                "14px",
+                                {
+                                        "lineHeight": "1.0",
+                                        "letterSpacing": "0.02em",
+                                        "fontWeight": "700"
+                                }
+                        ],
+                        "headline-xl": [
+                                "48px",
+                                {
+                                        "lineHeight": "1.1",
+                                        "fontWeight": "800"
+                                }
+                        ],
+                        "body-md": [
+                                "16px",
+                                {
+                                        "lineHeight": "1.6",
+                                        "fontWeight": "400"
+                                }
+                        ],
+                        "headline-md": [
+                                "24px",
+                                {
+                                        "lineHeight": "1.3",
+                                        "fontWeight": "700"
+                                }
+                        ],
+                        "headline-lg": [
+                                "32px",
+                                {
+                                        "lineHeight": "1.2",
+                                        "fontWeight": "700"
+                                }
+                        ]
+                }
+            },
+            }
+          }
+        </script>
+    <style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            margin: 0;
+            padding-top: 80px; /* Space for TopAppBar */
+            padding-bottom: 100px; /* Space for BottomNavBar */
+            min-height: max(884px, 100dvh);
+        }
+        @keyframes scan {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col items-center">
+
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,163,224,0.1)] flex justify-between items-center px-8 py-4">
+    <button class="text-sky-500 dark:text-sky-400 hover:scale-105 transition-transform duration-200 active:scale-95 flex items-center justify-center p-2 rounded-full">
+        <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">palette</span>
+    </button>
+    <h1 class="font-['Plus_Jakarta_Sans'] font-extrabold tracking-tight text-xl font-black text-sky-600 dark:text-sky-400 text-center flex-1 mx-4">Mi Obra Maestra</h1>
+    <button class="text-sky-500 dark:text-sky-400 hover:scale-105 transition-transform duration-200 active:scale-95 flex items-center justify-center p-2 rounded-full overflow-hidden w-10 h-10 bg-surface-variant">
+        <img alt="Profile Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCAWTraqkqARSfFhwsuuRVRec03cCza2a9g3IdJeuUqjlcGOsfBShwlLpuOZYU52Twxj6aNk-DUACQ24LnKAHUPyk8OxCyBuNYla8rrZO0HNnWfZeRCCw_j13khsKiSyFW6hTzLoDjLuXOUwBPot1r0RoWEVkKyKyTAbysh_OuiIkX7Pz9dYLvh1RZHCgMalwEr2EGVN0IPkTUliQNTEDZpquIik3wQhUCu19iLjh4Y7hxC4bhuCfgxrhMYqtHSUZ5aKcPwjHpMA"/>
+    </button>
+</header>
+
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full max-w-7xl px-container-margin py-gutter flex flex-col gap-lg items-center relative overflow-hidden">
+    <!-- Decorative Easter Eggs -->
+    <div class="absolute -top-10 -right-10 opacity-10 pointer-events-none rotate-12">
+        <span class="material-symbols-outlined text-[120px] text-primary" style="font-variation-settings: 'FILL' 1;">local_florist</span>
+    </div>
+    <div class="absolute top-1/3 -left-16 opacity-5 pointer-events-none -rotate-45">
+        <span class="material-symbols-outlined text-[150px] text-secondary" style="font-variation-settings: 'FILL' 1;">eco</span>
+    </div>
+
+    <!-- Hero / Upload Section -->
+    <section class="w-full flex flex-col items-center text-center gap-md z-10">
+        <h2 class="font-headline-xl text-headline-xl text-on-surface">¡Crea tu Obra!</h2>
+        <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Sube una foto y deja que la magia de nuestra IA reconozca su estilo artístico.</p>
+        
+        <!-- Input file oculto controlado por el botón estético -->
+        <input type="file" id="file-uploader" accept="image/*" class="hidden" onchange="previewAndAnalyze(event)">
+        <button onclick="document.getElementById('file-uploader').click()" class="mt-sm bg-primary-container text-on-primary-container hover:scale-105 active:scale-95 transition-all duration-200 rounded-full px-xl py-md shadow-[0_8px_30px_rgba(0,163,224,0.3)] flex items-center gap-sm">
+            <span class="material-symbols-outlined text-[32px]">add_a_photo</span>
+            <span class="font-headline-md text-headline-md">Subir Foto</span>
+        </button>
+    </section>
+
+    <!-- Preview & Magic Styles Section (Bento Grid) -->
+    <section class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-12 gap-gutter z-10">
+        <!-- Main Preview Area -->
+        <div class="md:col-span-8 bg-surface-container-lowest rounded-xl p-sm shadow-[0_8px_30px_rgba(0,163,224,0.1)] relative overflow-hidden group">
+            <div class="absolute top-4 left-4 bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full font-label-bold text-label-bold shadow-md z-20 flex items-center gap-xs">
+                <span class="material-symbols-outlined text-[16px]">auto_awesome</span>
+                Vista Previa
+            </div>
+            <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative bg-surface-variant flex items-center justify-center">
+                <!-- Imagen cambiable con ID para JavaScript -->
+                <img id="preview-img" alt="Tu Imagen" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2tjkThYuOYr8TAihrzBTT7OjjHxFD1KigCxwt1cAkSiJLJmnWfE3UrmBzPMbYOgAS2agBFMHJxxIl9tIaQ5KxS0V161VcefuJCgutSoZJ_vFI8YnLjmDwGW38QIDjlNIH51tlvaC2NIfW-mOeGj4lAAFJ3TEgYuod1MSqSAWtMQVNvsQimbc9NbriwrE9oiqywiyGhHPbN3IaWl4544Qbf0kNmi6jKwaeB6zZ_eJSsDXp_NfII2VfjMTgOjwZO-8BiocD2XL_8A"/>
+                <!-- Efecto de línea de escaneo -->
+                <div id="scanline" class="absolute inset-0 bg-gradient-to-b from-transparent via-primary-container/20 to-transparent translate-y-[-100%] hidden"></div>
+            </div>
+        </div>
+
+        <!-- Resultados e Indicadores del Modelo -->
+        <div class="md:col-span-4 bg-surface-container-lowest rounded-xl p-gutter shadow-[0_8px_30px_rgba(0,163,224,0.1)] flex flex-col gap-md">
+            <h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+                <span class="material-symbols-outlined text-secondary">psychology</span>
+                Análisis de Estilo
+            </h3>
+            
+            <p class="text-xs text-on-surface-variant" id="status-text">Carga una imagen para iniciar el Laboratorio de IA.</p>
+
+            <div class="flex flex-col gap-sm flex-1 justify-center" id="label-container">
+                <!-- Estilo 1: Sketch Pencil -->
+                <div id="style-sketch" class="bg-surface-container text-on-surface-variant rounded-lg p-sm flex flex-col gap-xs border-2 border-transparent transition-all duration-300">
+                    <div class="flex items-center gap-sm">
+                        <div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-outline">
+                            <span class="material-symbols-outlined">edit</span>
+                        </div>
+                        <span class="font-label-bold text-label-bold flex-1">Sketch Pencil</span>
+                        <span class="font-label-bold text-sky-600 val">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                        <div class="bg-sky-500 h-full bar transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Estilo 2: Watercolor -->
+                <div id="style-watercolor" class="bg-surface-container text-on-surface-variant rounded-lg p-sm flex flex-col gap-xs border-2 border-transparent transition-all duration-300">
+                    <div class="flex items-center gap-sm">
+                        <div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-outline">
+                            <span class="material-symbols-outlined">water_drop</span>
+                        </div>
+                        <span class="font-label-bold text-label-bold flex-1">Watercolor</span>
+                        <span class="font-label-bold text-sky-600 val">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                        <div class="bg-sky-500 h-full bar transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Estilo 3: Cubism -->
+                <div id="style-cubism" class="bg-surface-container text-on-surface-variant rounded-lg p-sm flex flex-col gap-xs border-2 border-transparent transition-all duration-300">
+                    <div class="flex items-center gap-sm">
+                        <div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-outline">
+                            <span class="material-symbols-outlined">grid_view</span>
+                        </div>
+                        <span class="font-label-bold text-label-bold flex-1">Cubism</span>
+                        <span class="font-label-bold text-sky-600 val">0%</span>
+                    </div>
+                    <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                        <div class="bg-sky-500 h-full bar transition-all duration-300" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Joy Bar / Progress Indicator -->
+    <div id="joy-bar" class="w-full max-w-3xl h-4 bg-surface-container rounded-full overflow-hidden shadow-inner mt-lg relative hidden">
+        <div class="h-full bg-gradient-to-r from-primary to-secondary-container w-[100%] rounded-full relative animate-[pulse_1.5s_infinite]">
+        </div>
+    </div>
+</main>
+
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 w-full rounded-t-[48px] z-50 border-t border-gray-100 dark:border-gray-800 shadow-[0_-10px_40px_rgba(0,163,224,0.15)] bg-white dark:bg-gray-900 flex justify-around items-center px-4 pt-3 pb-8 md:hidden">
+    <a class="flex flex-col items-center justify-center bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-300 rounded-full px-6 py-2" href="#">
+        <span class="material-symbols-outlined text-[24px] mb-1" style="font-variation-settings: 'FILL' 1;">home_app_logo</span>
+        <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Laboratorio</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 px-6 py-2" href="#">
+        <span class="material-symbols-outlined text-[24px] mb-1">auto_awesome_motion</span>
+        <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Galería</span>
+    </a>
+    <a class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 px-6 py-2" href="#">
+        <span class="material-symbols-outlined text-[24px] mb-1">museum</span>
+        <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">MAMB</span>
+    </a>
+</nav>
+
+<!-- Top Nav cluster for Desktop -->
+<nav class="hidden md:flex fixed top-0 right-20 h-[80px] items-center gap-gutter z-50 pointer-events-none">
+    <div class="pointer-events-auto flex gap-unit bg-surface-container-lowest/50 backdrop-blur-md px-4 py-2 rounded-full border border-surface-variant shadow-sm">
+        <a class="px-4 py-2 rounded-full bg-primary-container text-on-primary-container font-label-bold text-label-bold shadow-sm" href="#">Laboratorio</a>
+        <a class="px-4 py-2 rounded-full text-on-surface-variant hover:bg-surface-container font-label-bold text-label-bold transition-colors" href="#">Galería</a>
+        <a class="px-4 py-2 rounded-full text-on-surface-variant hover:bg-surface-container font-label-bold text-label-bold transition-colors" href="#">MAMB</a>
+    </div>
+</nav>
+
+<!-- Lógica de Inteligencia Artificial integrada -->
+<script type="text/javascript">
+    // REEMPLAZA ESTA URL CON EL LINK DE TU MODELO EXPORTADO DE TEACHABLE MACHINE (debe terminar en barra '/')
+    const URL_MODELO = "https://teachablemachine.withgoogle.com/models/8bAjMrTZW/"; 
+
+    let model, maxPredictions;
+
+    // Carga automática del modelo al iniciar la página
+    async function loadModel() {
+        const statusText = document.getElementById("status-text");
+        try {
+            statusText.innerText = "Cargando cerebro de IA...";
+            const modelURL = URL_MODELO + "model.json";
+            const metadataURL = URL_MODELO + "metadata.json";
+            
+            model = await tmImage.load(modelURL, metadataURL);
+            maxPredictions = model.getTotalClasses();
+            statusText.innerText = "¡IA lista! Sube una foto para analizar su estilo.";
+        } catch (error) {
+            console.error(error);
+            statusText.innerText = "Error al cargar el modelo. Verifica la URL_MODELO.";
+        }
+    }
+
+    // Ejecutar carga al abrir la ventana
+    window.addEventListener('DOMContentLoaded', loadModel);
+
+    // Captura la imagen subida, la muestra en la vista previa y la procesa con la IA
+    async function previewAndAnalyze(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const previewImg = document.getElementById("preview-img");
+        const joyBar = document.getElementById("joy-bar");
+        const scanline = document.getElementById("scanline");
+        const statusText = document.getElementById("status-text");
+
+        // 1. Mostrar la imagen del usuario en el recuadro de vista previa
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+        }
+        reader.readAsDataURL(file);
+
+        // 2. Mostrar animaciones de carga ("Magia")
+        joyBar.classList.remove("hidden");
+        scanline.classList.remove("hidden");
+        scanline.style.animation = "scan 2s ease-in-out infinite";
+        statusText.innerText = "Analizando pinceladas y texturas...";
+
+        // Esperar un momento a que la imagen se renderice completamente en el navegador antes de predecir
+        previewImg.onload = async function() {
+            if (!model) {
+                alert("La IA aún se está cargando. Por favor, espera un segundo.");
+                return;
+            }
+
+            // 3. Pasar la imagen por el modelo predictivo de Teachable Machine
+            const prediction = await model.predict(previewImg);
+            
+            // Ocultar efectos de carga
+            joyBar.classList.add("hidden");
+            scanline.classList.add("hidden");
+            statusText.innerText = "¡Análisis completo!";
+
+            // 4. Mapear los resultados obtenidos a nuestros contenedores visuales
+            let highestPrediction = { className: "", probability: 0 };
+
+            for (let i = 0; i < maxPredictions; i++) {
+                const name = prediction[i].className.toLowerCase().replace(/\s+/g, '');
+                const percent = (prediction[i].probability * 100).toFixed(0);
+                
+                // Guardar cuál es el estilo dominante
+                if (prediction[i].probability > highestPrediction.probability) {
+                    highestPrediction = prediction[i];
+                }
+
+                // Buscar el contenedor adecuado (sketch, watercolor o cubism)
+                let targetBlock = null;
+                if (name.includes("sketch") || name.includes("pencil")) {
+                    targetBlock = document.getElementById("style-sketch");
+                } else if (name.includes("water")) {
+                    targetBlock = document.getElementById("style-watercolor");
+                } else if (name.includes("cubism") || name.includes("cubismo")) {
+                    targetBlock = document.getElementById("style-cubism");
+                }
+
+                // Actualizar barras de porcentaje estéticas en base al resultado real
+                if (targetBlock) {
+                    targetBlock.querySelector(".val").innerText = percent + "%";
+                    targetBlock.querySelector(".bar").style.width = percent + "%";
+                    
+                    // Resetear estilos activos previos
+                    targetBlock.className = targetBlock.className.replace(/bg-primary-fixed|border-primary-container|shadow-.+?/g, "").trim();
+                    targetBlock.classList.add("bg-surface-container", "text-on-surface-variant");
+                }
+            }
+
+            // 5. Resaltar visualmente el estilo que haya ganado con la mayor probabilidad
+            const winnerName = highestPrediction.className.toLowerCase().replace(/\s+/g, '');
+            let winnerBlock = null;
+            if (winnerName.includes("sketch") || winnerName.includes("pencil")) winnerBlock = document.getElementById("style-sketch");
+            else if (winnerName.includes("water")) winnerBlock = document.getElementById("style-watercolor");
+            else if (winnerName.includes("cubism")) winnerBlock = document.getElementById("style-cubism");
+
+            if (winnerBlock) {
+                winnerBlock.classList.remove("bg-surface-container", "text-on-surface-variant");
+                winnerBlock.classList.add("bg-primary-fixed", "text-on-primary-fixed", "border-primary-container", "shadow-[0_4px_15px_rgba(0,163,224,0.2)]");
+                statusText.innerText = `¡Detectamos el estilo predominante: ${highestPrediction.className}!`;
+            }
+        };
+    }
+</script>
+</body>
+</html>
