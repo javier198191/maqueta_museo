@@ -1,0 +1,120 @@
+import React, { useState } from 'react';
+
+/**
+ * Componente: ArtworkForm (Ficha Técnica)
+ * Basado en {{DATA:SCREEN:SCREEN_4}}
+ */
+const ArtworkForm = () => {
+  const [formData, setFormData] = useState({
+    title: 'El Monstruo de Colores',
+    author: 'Leo (MAMB Kid)',
+    year: '2024',
+    category: 'Abstracto',
+    style: 'Acuarela Caribeña',
+    description: ''
+  });
+
+  const categories = ['Retrato', 'Abstracto', 'Paisaje'];
+
+  return (
+    <div className="bg-mamb-white min-h-screen p-6 pb-24">
+      {/* Contenedor de Ficha */}
+      <div className="bg-white rounded-mamb shadow-2xl overflow-hidden">
+        {/* Encabezado con Icono */}
+        <div className="p-8 border-b border-gray-50">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-caribbean-blue rounded-2xl flex items-center justify-center text-white shadow-lg shadow-sky-200">
+              <span className="material-icons text-3xl">assignment</span>
+            </div>
+            <div>
+              <h1 className="text-2xl font-black text-gray-800">Ficha Técnica</h1>
+              <p className="text-gray-400 font-medium">¡Dale identidad a tu obra!</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Formulario */}
+        <div className="p-8 space-y-8">
+          {/* Nombre de la Obra */}
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-gray-600 ml-1">Nombre de la Obra</label>
+            <input 
+              type="text"
+              value={formData.title}
+              onChange={(e) => setFormData({...formData, title: e.target.value})}
+              className="w-full bg-sky-50 border-2 border-sky-100 rounded-2xl p-4 text-caribbean-blue font-bold text-lg focus:outline-none focus:border-caribbean-blue"
+            />
+          </div>
+
+          {/* Autor */}
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-gray-600 ml-1">Autor / Artista</label>
+            <div className="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl border-2 border-gray-100">
+              <span className="material-icons text-gray-400">face</span>
+              <span className="text-gray-700 font-bold">{formData.author}</span>
+            </div>
+          </div>
+
+          {/* Categoría Selector */}
+          <div className="space-y-3">
+            <label className="text-sm font-bold text-gray-600 ml-1">Categoría</label>
+            <div className="flex flex-wrap gap-3">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setFormData({...formData, category: cat})}
+                  className={`px-6 py-3 rounded-full font-bold flex items-center gap-2 transition-all ${
+                    formData.category === cat 
+                      ? 'bg-energetic-orange text-white shadow-lg' 
+                      : 'bg-gray-100 text-gray-500'
+                  }`}
+                >
+                  <span className="material-icons text-sm">
+                    {cat === 'Retrato' ? 'face' : cat === 'Abstracto' ? 'category' : 'landscape'}
+                  </span>
+                  {cat}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Estilo Seleccionado (ReadOnly en este paso) */}
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-gray-600 ml-1">Estilo Mágico</label>
+            <div className="inline-flex items-center gap-3 bg-orange-100 text-orange-800 px-6 py-3 rounded-full font-bold border-2 border-orange-200">
+              <span className="material-icons">brush</span>
+              {formData.style}
+            </div>
+          </div>
+
+          {/* Descripción */}
+          <div className="space-y-2">
+            <label className="text-sm font-bold text-gray-600 ml-1 flex items-center gap-1">
+              <span className="material-icons text-sm">favorite</span>
+              ¿Qué sientes al ver tu obra?
+            </label>
+            <textarea 
+              rows="4"
+              placeholder="Escribe aquí la historia de tu pintura..."
+              className="w-full bg-gray-50 border-2 border-gray-100 rounded-[32px] p-6 focus:outline-none focus:border-caribbean-blue text-gray-600 font-medium italic"
+            />
+          </div>
+
+          {/* Botones de Acción */}
+          <div className="pt-4 flex flex-col gap-4">
+             <button className="w-full bg-gradient-to-r from-orange-600 to-energetic-orange text-white py-5 rounded-full font-black text-xl flex items-center justify-center gap-3 shadow-xl active:scale-95 transition-all">
+                <span className="material-icons">share</span>
+                Compartir
+             </button>
+             <button className="w-full bg-caribbean-blue text-white py-5 rounded-full font-black text-xl flex items-center justify-center gap-3 shadow-xl active:scale-95 transition-all">
+                <span className="material-icons">save</span>
+                Guardar Obra
+             </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ArtworkForm;

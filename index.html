@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>MAMB Kids - Mi Obra Maestra</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+              "on-primary-fixed-variant": "#004c6b",
+              "tertiary": "#735c00",
+              "on-error-container": "#93000a",
+              "on-surface-variant": "#3e4850",
+              "surface-container-low": "#f3f3f4",
+              "surface-bright": "#f9f9f9",
+              "secondary-fixed": "#ffdbce",
+              "surface-container-highest": "#e2e2e2",
+              "on-surface": "#1a1c1c",
+              "primary": "#00658d",
+              "background": "#f9f9f9",
+              "on-primary": "#ffffff",
+              "outline-variant": "#bdc8d1",
+              "error-container": "#ffdad6",
+              "on-secondary-fixed": "#370e00",
+              "outline": "#6e7881",
+              "error": "#ba1a1a",
+              "on-tertiary-container": "#4f3e00",
+              "surface-container": "#eeeeee",
+              "primary-fixed": "#c6e7ff",
+              "surface-container-high": "#e8e8e8",
+              "surface-dim": "#dadada",
+              "secondary-container": "#fd661d",
+              "primary-container": "#00a3e0",
+              "on-secondary-container": "#571a00",
+              "on-background": "#1a1c1c",
+              "surface-variant": "#e2e2e2",
+              "surface-container-lowest": "#ffffff",
+              "on-secondary": "#ffffff",
+              "on-tertiary-fixed": "#241a00",
+              "inverse-surface": "#2f3131",
+              "on-tertiary": "#ffffff",
+              "primary-fixed-dim": "#81cfff",
+              "surface-tint": "#00658d",
+              "surface": "#f9f9f9",
+              "tertiary-fixed-dim": "#f0c100",
+              "on-tertiary-fixed-variant": "#574500",
+              "inverse-on-surface": "#f0f1f1",
+              "on-error": "#ffffff",
+              "secondary-fixed-dim": "#ffb599",
+              "on-primary-fixed": "#001e2d",
+              "on-secondary-fixed-variant": "#7f2b00",
+              "tertiary-fixed": "#ffe089",
+              "inverse-primary": "#81cfff",
+              "on-primary-container": "#00354b",
+              "tertiary-container": "#d0a700",
+              "secondary": "#a73a00"
+            },
+            "borderRadius": {
+              "DEFAULT": "1rem",
+              "lg": "2rem",
+              "xl": "3rem",
+              "full": "9999px"
+            },
+            "spacing": {
+              "gutter": "24px",
+              "container-margin": "32px",
+              "lg": "48px",
+              "sm": "12px",
+              "unit": "8px",
+              "xl": "80px",
+              "md": "24px",
+              "xs": "4px"
+            },
+            "fontFamily": {
+              "body-lg": ["Plus Jakarta Sans"],
+              "label-bold": ["Plus Jakarta Sans"],
+              "headline-xl": ["Plus Jakarta Sans"],
+              "body-md": ["Plus Jakarta Sans"],
+              "headline-md": ["Plus Jakarta Sans"],
+              "headline-lg": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+              "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "500" }],
+              "label-bold": ["14px", { "lineHeight": "1.0", "letterSpacing": "0.02em", "fontWeight": "700" }],
+              "headline-xl": ["48px", { "lineHeight": "1.1", "fontWeight": "800" }],
+              "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+              "headline-md": ["24px", { "lineHeight": "1.3", "fontWeight": "700" }],
+              "headline-lg": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }]
+            }
+          }
+        }
+      }
+    </script>
+    <style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            margin: 0;
+        }
+        @keyframes scan {
+            0%, 100% { transform: translateY(-100%); }
+            50% { transform: translateY(100%); }
+        }
+        /* Tactile button shadow for kids theme */
+        .btn-tactile-primary {
+            box-shadow: 0 6px 0 0 rgba(0, 101, 141, 1);
+            transform: translateY(0);
+            transition: all 0.1s ease;
+        }
+        .btn-tactile-primary:active {
+            box-shadow: 0 0px 0 0 rgba(0, 101, 141, 1);
+            transform: translateY(6px);
+        }
+        .btn-tactile-secondary {
+            box-shadow: 0 6px 0 0 rgba(167, 58, 0, 1);
+            transform: translateY(0);
+            transition: all 0.1s ease;
+        }
+        .btn-tactile-secondary:active {
+            box-shadow: 0 0px 0 0 rgba(167, 58, 0, 1);
+            transform: translateY(6px);
+        }
+    </style>
+    <!-- TensorFlow.js and Teachable Machine Image Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
+</head>
+<body class="antialiased min-h-screen flex flex-col font-body-md">
+
+    <!-- Global TopAppBar -->
+    <header id="global-header" class="fixed top-0 w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,163,224,0.1)] flex justify-between items-center px-8 py-4">
+        <button class="text-sky-500 dark:text-sky-400 hover:scale-105 transition-transform duration-200 active:scale-95 flex items-center justify-center p-2 rounded-full">
+            <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">palette</span>
+        </button>
+        <h1 class="font-['Plus_Jakarta_Sans'] font-extrabold tracking-tight text-xl font-black text-sky-600 dark:text-sky-400 text-center flex-1 mx-4">Mi Obra Maestra</h1>
+        <button class="text-sky-500 dark:text-sky-400 hover:scale-105 transition-transform duration-200 active:scale-95 flex items-center justify-center p-2 rounded-full overflow-hidden w-10 h-10 bg-surface-variant border-2 border-primary-container">
+            <img alt="Profile Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCAWTraqkqARSfFhwsuuRVRec03cCza2a9g3IdJeuUqjlcGOsfBShwlLpuOZYU52Twxj6aNk-DUACQ24LnKAHUPyk8OxCyBuNYla8rrZO0HNnWfZeRCCw_j13khsKiSyFW6hTzLoDjLuXOUwBPot1r0RoWEVkKyKyTAbysh_OuiIkX7Pz9dYLvh1RZHCgMalwEr2EGVN0IPkTUliQNTEDZpquIik3wQhUCu19iLjh4Y7hxC4bhuCfgxrhMYqtHSUZ5aKcPwjHpMA"/>
+        </button>
+    </header>
+
+    <!-- Global Desktop Navigation -->
+    <nav id="desktop-nav" class="hidden md:flex fixed top-0 right-20 h-[80px] items-center gap-gutter z-50 pointer-events-none">
+        <div class="pointer-events-auto flex gap-unit bg-surface-container-lowest/50 backdrop-blur-md px-4 py-2 rounded-full border border-surface-variant shadow-sm">
+            <button id="desk-btn-laboratorio" class="px-4 py-2 rounded-full font-label-bold text-label-bold transition-all duration-300 bg-primary-container text-on-primary-container shadow-sm">Laboratorio</button>
+            <button id="desk-btn-ficha" class="px-4 py-2 rounded-full font-label-bold text-label-bold transition-all duration-300 text-on-surface-variant hover:bg-surface-container">Ficha Técnica</button>
+            <button id="desk-btn-galeria" class="px-4 py-2 rounded-full font-label-bold text-label-bold transition-all duration-300 text-on-surface-variant hover:bg-surface-container">Galería</button>
+            <button id="desk-btn-mamb" class="px-4 py-2 rounded-full font-label-bold text-label-bold transition-all duration-300 text-on-surface-variant hover:bg-surface-container">MAMB</button>
+        </div>
+    </nav>
+
+    <!-- Main Views Wrapper -->
+    <div class="flex-1 w-full mt-[80px] pb-[100px] md:pb-[40px]">
+
+        <!-- VIEW 1: LABORATORIO DE IA -->
+        <section id="view-laboratorio" class="w-full">
+            <main class="flex-1 w-full max-w-7xl mx-auto px-container-margin py-gutter flex flex-col gap-lg items-center relative overflow-hidden">
+                <!-- Decorative Cayena Easter Egg -->
+                <div class="absolute -top-10 -right-10 opacity-10 pointer-events-none rotate-12">
+                    <span class="material-symbols-outlined text-[120px] text-primary" style="font-variation-settings: 'FILL' 1;">local_florist</span>
+                </div>
+                <div class="absolute top-1/3 -left-16 opacity-5 pointer-events-none -rotate-45">
+                    <span class="material-symbols-outlined text-[150px] text-secondary" style="font-variation-settings: 'FILL' 1;">eco</span>
+                </div>
+
+                <!-- Hero / Upload Section -->
+                <section class="w-full flex flex-col items-center text-center gap-md z-10">
+                    <h2 class="font-headline-xl text-headline-xl text-on-surface">¡Crea tu Obra!</h2>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Sube una foto y deja que la magia del laboratorio la convierta en arte increíble.</p>
+                    <p id="status-text" class="font-label-bold text-label-bold text-primary mt-xs"></p>
+                    <button id="upload-btn" class="mt-sm bg-primary-container text-on-primary-container hover:scale-105 active:scale-95 transition-all duration-200 rounded-full px-xl py-md shadow-[0_8px_30px_rgba(0,163,224,0.3)] flex items-center gap-sm">
+                        <span class="material-symbols-outlined text-[32px]">add_a_photo</span>
+                        <span class="font-headline-md text-headline-md">Subir Foto</span>
+                    </button>
+                    <input type="file" id="file-uploader" accept="image/*" class="hidden">
+                </section>
+
+                <!-- Preview & Magic Styles Section (Bento Grid) -->
+                <section class="w-full max-w-5xl grid grid-cols-1 md:grid-cols-12 gap-gutter z-10">
+                    <!-- Main Preview Area -->
+                    <div class="md:col-span-8 bg-surface-container-lowest rounded-xl p-sm shadow-[0_8px_30px_rgba(0,163,224,0.1)] relative overflow-hidden group">
+                        <div class="absolute top-4 left-4 bg-secondary-container text-on-secondary-container px-4 py-2 rounded-full font-label-bold text-label-bold shadow-md z-20 flex items-center gap-xs">
+                            <span class="material-symbols-outlined text-[16px]">auto_awesome</span>
+                            Vista Previa
+                        </div>
+                        <div class="w-full aspect-[4/3] rounded-lg overflow-hidden relative bg-surface-variant">
+                            <img id="preview-img" alt="Kid transformed into Pop Art" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD2tjkThYuOYr8TAihrzBTT7OjjHxFD1KigCxwt1cAkSiJLJmnWfE3UrmBzPMbYOgAS2agBFMHJxxIl9tIaQ5KxS0V161VcefuJCgutSoZJ_vFI8YnLjmDwGW38QIDjlNIH51tlvaC2NIfW-mOeGj4lAAFJ3TEgYuod1MSqSAWtMQVNvsQimbc9NbriwrE9oiqywiyGhHPbN3IaWl4544Qbf0kNmi6jKwaeB6zZ_eJSsDXp_NfII2VfjMTgOjwZO-8BiocD2XL_8A"/>
+                            <!-- Decorative scanline effect -->
+                            <div id="scanline" class="absolute inset-0 bg-gradient-to-b from-transparent via-primary-container/10 to-transparent translate-y-[-100%] hidden"></div>
+                        </div>
+                    </div>
+
+                    <!-- Magic Styles Selector -->
+                    <div class="md:col-span-4 bg-surface-container-lowest rounded-xl p-gutter shadow-[0_8px_30px_rgba(0,163,224,0.1)] flex flex-col gap-md">
+                        <h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-xs">
+                            <span class="material-symbols-outlined text-secondary">palette</span>
+                            Estilos Mágicos
+                        </h3>
+                        <div class="grid grid-cols-1 gap-sm flex-1">
+                            <!-- Style Option 1: Sketch Pencil -->
+                            <button id="style-sketch" class="bg-surface-container text-on-surface-variant rounded-lg p-sm flex flex-col gap-xs hover:bg-surface-container-high transition-colors duration-200 border-2 border-transparent w-full text-left">
+                                <div class="flex items-center gap-sm w-full">
+                                    <div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-outline">
+                                        <span class="material-symbols-outlined">brush</span>
+                                    </div>
+                                    <span class="font-label-bold text-label-bold flex-1">Sketch Pencil</span>
+                                    <span class="val font-label-bold text-label-bold text-right">0%</span>
+                                </div>
+                                <div class="w-full bg-surface-variant/50 h-2 rounded-full overflow-hidden mt-xs">
+                                    <div class="bar h-full bg-primary rounded-full transition-all duration-300" style="width: 0%"></div>
+                                </div>
+                            </button>
+                            <!-- Style Option 2: Watercolor -->
+                            <button id="style-watercolor" class="bg-surface-container text-on-surface-variant rounded-lg p-sm flex flex-col gap-xs hover:bg-surface-container-high transition-colors duration-200 border-2 border-transparent w-full text-left">
+                                <div class="flex items-center gap-sm w-full">
+                                    <div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-outline">
+                                        <span class="material-symbols-outlined">water_drop</span>
+                                    </div>
+                                    <span class="font-label-bold text-label-bold flex-1">Watercolor</span>
+                                    <span class="val font-label-bold text-label-bold text-right">0%</span>
+                                </div>
+                                <div class="w-full bg-surface-variant/50 h-2 rounded-full overflow-hidden mt-xs">
+                                    <div class="bar h-full bg-primary rounded-full transition-all duration-300" style="width: 0%"></div>
+                                </div>
+                            </button>
+                            <!-- Style Option 3: Cubism -->
+                            <button id="style-cubism" class="bg-surface-container text-on-surface-variant rounded-lg p-sm flex flex-col gap-xs hover:bg-surface-container-high transition-colors duration-200 border-2 border-transparent w-full text-left">
+                                <div class="flex items-center gap-sm w-full">
+                                    <div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-outline">
+                                        <span class="material-symbols-outlined">grid_view</span>
+                                    </div>
+                                    <span class="font-label-bold text-label-bold flex-1">Cubism</span>
+                                    <span class="val font-label-bold text-label-bold text-right">0%</span>
+                                </div>
+                                <div class="w-full bg-surface-variant/50 h-2 rounded-full overflow-hidden mt-xs">
+                                    <div class="bar h-full bg-primary rounded-full transition-all duration-300" style="width: 0%"></div>
+                                </div>
+                            </button>
+                        </div>
+                        <button class="w-full py-sm mt-auto bg-secondary-container text-on-secondary-container rounded-full font-label-bold text-label-bold hover:scale-105 active:scale-95 transition-transform duration-200 shadow-md">
+                            ¡Aplicar Magia!
+                        </button>
+                    </div>
+                </section>
+
+                <!-- The "Joy" Bar Progress (Hidden by default, shown during generation) -->
+                <div id="joy-bar" class="w-full max-w-3xl h-4 bg-surface-container rounded-full overflow-hidden shadow-inner mt-lg relative hidden">
+                    <div class="h-full bg-gradient-to-r from-primary to-secondary-container w-[60%] rounded-full relative">
+                        <span class="material-symbols-outlined absolute right-0 top-1/2 -translate-y-1/2 text-secondary-container text-[20px] translate-x-1/2" style="font-variation-settings: 'FILL' 1;">local_florist</span>
+                    </div>
+                </div>
+            </main>
+        </section>
+
+        <!-- VIEW 2: FICHA TÉCNICA -->
+        <section id="view-ficha" class="hidden w-full">
+            <main class="max-w-4xl mx-auto px-container-margin pt-gutter flex flex-col gap-gutter">
+                <!-- Artwork Display Area -->
+                <div class="w-full bg-surface-container-lowest rounded-xl shadow-[0_16px_40px_-10px_rgba(0,163,224,0.2)] overflow-hidden relative border-4 border-white group">
+                    <img id="ficha-img" alt="Generated Artwork" class="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgXLAA2_HjnvTBq1Um_WliRMrPmMiNcFTU2Povy8hmYihofLUp1FRpgXdrQfFE4Sc8jo4XidjXIVqc9Fkthug0yRRBy5R8vvCcXR0yQIGtJW6-ofAVRfh_TQ_qaJXWPmB4f0z-UIlA6Wkae3viPf1-EA6I0lptuSi3UqBshw3427GMs0cxs4jzQdtWN6dvdFzbCbcGgxW4R-h0PAs9pvQuktk8kR55CBXtGLgXJAA71EC10e-PkhN7P7pnDhKz3lMIo1t5AMwYPg"/>
+                    <!-- Subtle floating badge -->
+                    <div class="absolute top-md right-md bg-white/90 backdrop-blur-sm rounded-full px-sm py-xs flex items-center gap-xs shadow-lg">
+                        <span class="material-symbols-outlined text-tertiary-container text-xl" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                        <span class="font-label-bold text-label-bold text-tertiary">Recién Creado</span>
+                    </div>
+                </div>
+
+                <!-- Ficha Técnica Dinámica Card -->
+                <section class="bg-surface-container-lowest rounded-[2.5rem] p-lg shadow-[0_20px_50px_-12px_rgba(0,101,141,0.15)] relative overflow-hidden border border-surface-variant">
+                    <!-- Decorative background element (Easter Egg) -->
+                    <span class="material-symbols-outlined absolute -bottom-10 -right-10 text-[180px] text-primary-fixed/30 select-none pointer-events-none rotate-12">local_florist</span>
+                    <div class="relative z-10 flex flex-col gap-gutter">
+                        <!-- Header -->
+                        <div class="flex items-center gap-sm border-b-2 border-surface-container pb-md">
+                            <div class="w-12 h-12 bg-primary-container rounded-full flex items-center justify-center text-on-primary-container shadow-inner">
+                                <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">assignment</span>
+                            </div>
+                            <div>
+                                <h2 class="font-headline-md text-headline-md text-on-surface">Ficha Técnica</h2>
+                                <p class="font-body-md text-body-md text-on-surface-variant">¡Dale identidad a tu obra de arte!</p>
+                            </div>
+                        </div>
+
+                        <!-- Form Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+                            <!-- Nombre de la Obra (Editable) -->
+                            <div class="col-span-1 md:col-span-2 flex flex-col gap-xs">
+                                <label class="font-label-bold text-label-bold text-on-surface-variant ml-xs" for="obra-nombre">Nombre de la Obra</label>
+                                <input class="w-full bg-surface border-2 border-outline-variant rounded-DEFAULT p-sm font-headline-md text-[20px] text-primary focus:border-primary focus:ring-4 focus:ring-primary-fixed transition-all outline-none placeholder:text-outline shadow-inner placeholder:font-body-md" id="obra-nombre" type="text" value="El Monstruo de Colores"/>
+                            </div>
+                            <!-- Autor -->
+                            <div class="flex flex-col gap-xs">
+                                <label class="font-label-bold text-label-bold text-on-surface-variant ml-xs">Autor / Artista</label>
+                                <div class="w-full bg-surface-container border-2 border-surface-dim rounded-DEFAULT p-sm font-body-lg text-body-lg text-on-surface flex items-center gap-sm cursor-not-allowed opacity-90">
+                                    <span class="material-symbols-outlined text-outline">face_4</span>
+                                    Leo (MAMB Kid)
+                                </div>
+                            </div>
+                            <!-- Año -->
+                            <div class="flex flex-col gap-xs">
+                                <label class="font-label-bold text-label-bold text-on-surface-variant ml-xs">Año de Creación</label>
+                                <div class="w-full bg-surface-container border-2 border-surface-dim rounded-DEFAULT p-sm font-body-lg text-body-lg text-on-surface flex items-center gap-sm cursor-not-allowed opacity-90">
+                                    <span class="material-symbols-outlined text-outline">calendar_month</span>
+                                    2026
+                                </div>
+                            </div>
+                            <!-- Categoría -->
+                            <div class="flex flex-col gap-xs">
+                                <label class="font-label-bold text-label-bold text-on-surface-variant ml-xs">Categoría</label>
+                                <div class="flex flex-wrap gap-sm">
+                                    <button class="bg-surface-container border-2 border-outline-variant rounded-full px-md py-unit font-label-bold text-label-bold text-on-surface-variant hover:bg-surface-container-high hover:border-outline transition-colors flex items-center gap-xs">
+                                        <span class="material-symbols-outlined text-lg">face</span>
+                                        Retrato
+                                    </button>
+                                    <button class="bg-tertiary-container border-2 border-tertiary text-on-tertiary-container rounded-full px-md py-unit font-label-bold text-label-bold shadow-sm flex items-center gap-xs">
+                                        <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">category</span>
+                                        Abstracto
+                                    </button>
+                                    <button class="bg-surface-container border-2 border-outline-variant rounded-full px-md py-unit font-label-bold text-label-bold text-on-surface-variant hover:bg-surface-container-high hover:border-outline transition-colors flex items-center gap-xs">
+                                        <span class="material-symbols-outlined text-lg">landscape</span>
+                                        Paisaje
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Estilo (AI Filter Chip) -->
+                            <div class="flex flex-col gap-xs">
+                                <label class="font-label-bold text-label-bold text-on-surface-variant ml-xs">Estilo Mágico</label>
+                                <div class="inline-flex items-center self-start bg-secondary-fixed border-2 border-secondary/20 rounded-lg px-sm py-unit gap-sm">
+                                    <div class="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-on-secondary shadow-sm">
+                                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">brush</span>
+                                    </div>
+                                    <span id="winning-style-chip" class="font-label-bold text-label-bold text-on-secondary-fixed-variant">Ninguno</span>
+                                </div>
+                            </div>
+                            <!-- Descripción -->
+                            <div class="col-span-1 md:col-span-2 flex flex-col gap-xs mt-sm">
+                                <label class="font-label-bold text-label-bold text-on-surface-variant ml-xs flex items-center gap-xs" for="obra-desc">
+                                    <span class="material-symbols-outlined text-sm">favorite</span>
+                                    ¿Qué sientes al ver tu obra? (Descripción)
+                                </label>
+                                <textarea class="w-full bg-surface border-2 border-outline-variant rounded-DEFAULT p-sm font-body-md text-body-md text-on-surface focus:border-primary focus:ring-4 focus:ring-primary-fixed transition-all outline-none resize-none shadow-inner" id="obra-desc" placeholder="Escribe aquí la historia de tu pintura..." rows="3"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Actions -->
+                        <div class="flex flex-col sm:flex-row gap-md mt-md pt-md border-t-2 border-surface-container border-dashed">
+                            <button class="btn-tactile-secondary bg-secondary text-on-secondary font-headline-md text-[18px] py-md px-lg rounded-full flex-1 flex items-center justify-center gap-sm transition-all duration-300">
+                                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">share</span>
+                                Compartir
+                            </button>
+                            <button class="btn-tactile-primary bg-primary text-on-primary font-headline-md text-[18px] py-md px-lg rounded-full flex-1 flex items-center justify-center gap-sm transition-all duration-300">
+                                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">save</span>
+                                Guardar Obra
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </section>
+
+        <!-- VIEW 3: GALERÍA DE LA COMUNIDAD -->
+        <section id="view-galeria" class="hidden w-full">
+            <main class="max-w-7xl mx-auto px-container-margin py-lg md:pt-[20px]">
+                <!-- Header Section -->
+                <div class="text-center mb-xl">
+                    <h2 class="font-headline-xl text-headline-xl text-primary mb-sm">Galería de Pequeños Artistas</h2>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Descubre las increíbles creaciones de nuestros talentosos artistas. ¡Inspírate y dale corazón a tus favoritas!</p>
+                    <div class="flex justify-center gap-sm mt-md flex-wrap">
+                        <span class="px-md py-unit bg-primary-fixed text-on-primary-fixed rounded-full font-label-bold text-label-bold shadow-[0_4px_15px_rgba(0,163,224,0.15)] cursor-pointer hover:bg-primary-container hover:text-on-primary transition-colors">Todas</span>
+                        <span class="px-md py-unit bg-surface-container text-on-surface-variant rounded-full font-label-bold text-label-bold hover:bg-surface-container-high transition-colors cursor-pointer">Pintura</span>
+                        <span class="px-md py-unit bg-surface-container text-on-surface-variant rounded-full font-label-bold text-label-bold hover:bg-surface-container-high transition-colors cursor-pointer">Escultura</span>
+                        <span class="px-md py-unit bg-surface-container text-on-surface-variant rounded-full font-label-bold text-label-bold hover:bg-surface-container-high transition-colors cursor-pointer">Digital</span>
+                    </div>
+                </div>
+
+                <!-- Gallery Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-gutter mb-xl">
+                    <!-- Artwork Card 1 -->
+                    <article class="gallery-card bg-surface rounded-DEFAULT overflow-hidden shadow-[0_8px_30px_rgba(0,163,224,0.05)] hover:shadow-[0_15px_40px_rgba(0,163,224,0.15)] hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full cursor-pointer">
+                        <div class="aspect-square w-full relative overflow-hidden bg-surface-container-low">
+                            <img alt="Abstract colorful painting by a child" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEVW_csZMeVgjUq32UWOQ1BSCmMsjVR4_SExjjov1oZH__203uSsJwSHNySxQbi4lVIytQJB32czTtvk4nMl3qdXl2-h7Xdy_hLOuXX4B3oMS242_Z0wz8WotAvQOaTE42II_qba5AXVy0nLd7p55dffI47r7QozxWE8kJjjA73p5EyDYEjZ5PuWzXFvr-MhB2MAMRRJmcAMXo1ia12krvDFzUUG6rZ21zRcmF42HamYKDR4A6uaFrPkpDW6K9rKTm6FSB0JTZYg"/>
+                            <div class="absolute top-sm right-sm bg-white/90 backdrop-blur-sm rounded-full px-unit py-xs flex items-center gap-xs shadow-sm">
+                                <span class="material-symbols-outlined text-secondary-container text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                                <span class="like-count font-label-bold text-[12px] text-on-surface">24</span>
+                            </div>
+                        </div>
+                        <div class="p-sm flex flex-col flex-grow justify-between bg-surface">
+                            <div>
+                                <h3 class="gallery-title font-headline-md text-body-lg text-on-surface mb-xs truncate">Explosión de Color</h3>
+                                <p class="gallery-author font-body-md text-label-bold text-on-surface-variant">Por Sofía, 8 años</p>
+                            </div>
+                            <div class="mt-sm flex justify-between items-center">
+                                <span class="gallery-category text-[10px] uppercase font-bold text-primary-container tracking-wider bg-primary-fixed-dim/20 px-2 py-1 rounded">Pintura</span>
+                                <button aria-label="Dar me gusta" class="like-btn w-8 h-8 rounded-full bg-surface-container hover:bg-secondary-fixed flex items-center justify-center text-on-surface-variant hover:text-secondary transition-colors">
+                                    <span class="material-symbols-outlined text-xl">favorite</span>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Artwork Card 2 -->
+                    <article class="gallery-card bg-surface rounded-DEFAULT overflow-hidden shadow-[0_8px_30px_rgba(0,163,224,0.05)] hover:shadow-[0_15px_40px_rgba(0,163,224,0.15)] hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full cursor-pointer">
+                        <div class="aspect-square w-full relative overflow-hidden bg-surface-container-low">
+                            <img alt="Clay sculpture of an animal" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUoTfeLcSKXogEL0iVpo9wQ6D3aPHMfdtNcnXc_fzVDfwGbjslQADY3IAnSI-mpGJ0sFxm5FwaOcciuVNJ7z77x9NgoOM6CW0-dTpA0-0qlYhlaniplPBo_II5fF6W-MavARNgJB4R4F4KVXlVLIOrKHLwQChgF9iDSJCvYmGgtK-EG4eZRC34VeU5_24tW9v9KVCStrUuUuv3x9uKbl9ddzOII4iG5EKTqkXrmEM99wOuOCcrEcB3CjwpxEFz02s2dE-BEjKveA"/>
+                            <div class="absolute top-sm right-sm bg-white/90 backdrop-blur-sm rounded-full px-unit py-xs flex items-center gap-xs shadow-sm">
+                                <span class="material-symbols-outlined text-secondary-container text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                                <span class="like-count font-label-bold text-[12px] text-on-surface">18</span>
+                            </div>
+                        </div>
+                        <div class="p-sm flex flex-col flex-grow justify-between bg-surface">
+                            <div>
+                                <h3 class="gallery-title font-headline-md text-body-lg text-on-surface mb-xs truncate">Mi Perro Mágico</h3>
+                                <p class="gallery-author font-body-md text-label-bold text-on-surface-variant">Por Mateo, 6 años</p>
+                            </div>
+                            <div class="mt-sm flex justify-between items-center">
+                                <span class="gallery-category text-[10px] uppercase font-bold text-tertiary tracking-wider bg-tertiary-fixed/40 px-2 py-1 rounded">Escultura</span>
+                                <button aria-label="Dar me gusta" class="like-btn w-8 h-8 rounded-full bg-surface-container hover:bg-secondary-fixed flex items-center justify-center text-on-surface-variant hover:text-secondary transition-colors">
+                                    <span class="material-symbols-outlined text-xl">favorite</span>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Artwork Card 3 -->
+                    <article class="gallery-card bg-surface rounded-DEFAULT overflow-hidden shadow-[0_8px_30px_rgba(0,163,224,0.05)] hover:shadow-[0_15px_40px_rgba(0,163,224,0.15)] hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full cursor-pointer">
+                        <div class="aspect-square w-full relative overflow-hidden bg-surface-container-low">
+                            <img alt="Finger painting" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChS9gV3MMhbGHPr5cPLFIxS0W6d4QGGZ4-f7fkeiD7MKGTJObRPW2NARnThYZfHC1sc71KyqbeVilPDoGZHLkoMcrJYeetTyG0xZvllPpCW2588KjFD4Otii_rX2kfyYvex_o95emym-vgAc3OBoPaoW4IZSOTvNCgwGEJcMbN9ZAY9tYQplxBVLrt_4gcoNzLpkyNvkiZSaijHsmrYBQO7LrfLq4-tjABq2l7aP5JthvlsvZlgCjut1rkr4leeWQU73Ki13SZhA"/>
+                            <div class="absolute top-sm right-sm bg-white/90 backdrop-blur-sm rounded-full px-unit py-xs flex items-center gap-xs shadow-sm">
+                                <span class="material-symbols-outlined text-secondary-container text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                                <span class="like-count font-label-bold text-[12px] text-on-surface">42</span>
+                            </div>
+                        </div>
+                        <div class="p-sm flex flex-col flex-grow justify-between bg-surface">
+                            <div>
+                                <h3 class="gallery-title font-headline-md text-body-lg text-on-surface mb-xs truncate">Manos al Arte</h3>
+                                <p class="gallery-author font-body-md text-label-bold text-on-surface-variant">Por Valentina, 5 años</p>
+                            </div>
+                            <div class="mt-sm flex justify-between items-center">
+                                <span class="gallery-category text-[10px] uppercase font-bold text-primary-container tracking-wider bg-primary-fixed-dim/20 px-2 py-1 rounded">Pintura</span>
+                                <button aria-label="Dar me gusta" class="like-btn w-8 h-8 rounded-full bg-surface-container hover:bg-secondary-fixed flex items-center justify-center text-on-surface-variant hover:text-secondary transition-colors">
+                                    <span class="material-symbols-outlined text-xl">favorite</span>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Artwork Card 4 -->
+                    <article class="gallery-card bg-surface rounded-DEFAULT overflow-hidden shadow-[0_8px_30px_rgba(0,163,224,0.05)] hover:shadow-[0_15px_40px_rgba(0,163,224,0.15)] hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full cursor-pointer">
+                        <div class="aspect-square w-full relative overflow-hidden bg-surface-container-low">
+                            <img alt="Crayon drawing of a house" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7oQsKqWc1XqgF3tkjfaqRaRLsNS89Ze3GnUI6aPMxP43s1JGz7lzp05hcabPzFTS9gVgEfiJhASpwBWG8eCbWwHuIpfG7hg3XxPDGCNMnV3NMME8whWe4H6E_pVaDHzGboZC4NDp_EkG-bYXrN0pRi7lRpwddP4KbV6l5Z_U6NFN186j7LRxO-xzO2MjiEjo4WeAsK08EgloswQ6cgkfdPrnR67x01nOI80jkkwXq0ZrxWIfuqJ5G3OvYXRD345bcnlkfU3FGeg"/>
+                            <div class="absolute top-sm right-sm bg-white/90 backdrop-blur-sm rounded-full px-unit py-xs flex items-center gap-xs shadow-sm">
+                                <span class="material-symbols-outlined text-outline-variant text-sm" style="font-variation-settings: 'FILL' 0;">favorite</span>
+                                <span class="like-count font-label-bold text-[12px] text-on-surface">5</span>
+                            </div>
+                        </div>
+                        <div class="p-sm flex flex-col flex-grow justify-between bg-surface">
+                            <div>
+                                <h3 class="gallery-title font-headline-md text-body-lg text-on-surface mb-xs truncate">Mi Casa Feliz</h3>
+                                <p class="gallery-author font-body-md text-label-bold text-on-surface-variant">Por Lucas, 7 años</p>
+                            </div>
+                            <div class="mt-sm flex justify-between items-center">
+                                <span class="gallery-category text-[10px] uppercase font-bold text-secondary tracking-wider bg-secondary-fixed-dim/20 px-2 py-1 rounded">Dibujo</span>
+                                <button aria-label="Dar me gusta" class="like-btn w-8 h-8 rounded-full bg-surface-container hover:bg-secondary-fixed flex items-center justify-center text-on-surface-variant hover:text-secondary transition-colors">
+                                    <span class="material-symbols-outlined text-xl">favorite</span>
+                                </button>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Load More Button -->
+                    <div class="col-span-full flex justify-center mt-md">
+                        <button class="bg-primary-container text-on-primary font-label-bold text-label-bold px-lg py-md rounded-full shadow-[0_8px_20px_rgba(0,163,224,0.3)] hover:shadow-[0_12px_25px_rgba(0,163,224,0.4)] hover:scale-105 active:scale-95 transition-all duration-300">
+                            Cargar más obras
+                        </button>
+                    </div>
+                </div>
+
+                <!-- About Us Section -->
+                <section class="mt-xl bg-surface-container-low rounded-lg p-lg relative overflow-hidden flex flex-col md:flex-row items-center gap-xl shadow-[0_10px_40px_rgba(0,0,0,0.03)] border border-surface-container">
+                    <!-- Decorative Cayena background hint -->
+                    <div class="absolute -right-20 -bottom-20 opacity-5 pointer-events-none w-64 h-64">
+                        <svg class="text-primary w-full h-full" fill="currentColor" viewbox="0 0 100 100"><path d="M50 0 C60 30 90 40 100 50 C90 60 60 70 50 100 C40 70 10 60 0 50 C10 40 40 30 50 0 Z"></path></svg>
+                    </div>
+                    <div class="w-full md:w-1/3 flex justify-center z-10">
+                        <div class="w-48 h-48 bg-primary-fixed rounded-full flex items-center justify-center shadow-[inset_0_-10px_20px_rgba(0,101,141,0.1)] relative">
+                            <!-- Minimalist Happy Paintbrush Illustration -->
+                            <div class="relative w-24 h-32 flex flex-col items-center animate-bounce" style="animation-duration: 3s;">
+                                <!-- Brush head -->
+                                <div class="w-16 h-20 bg-secondary-container rounded-t-full rounded-b-md relative shadow-sm">
+                                    <div class="absolute bottom-2 left-3 w-2 h-2 bg-on-secondary-container rounded-full"></div>
+                                    <div class="absolute bottom-2 right-3 w-2 h-2 bg-on-secondary-container rounded-full"></div>
+                                    <div class="absolute bottom-1 left-1/2 -translate-x-1/2 w-4 h-2 border-b-2 border-on-secondary-container rounded-full"></div>
+                                </div>
+                                <!-- Metal ferrule -->
+                                <div class="w-14 h-4 bg-outline-variant mt-1 rounded-sm"></div>
+                                <!-- Handle -->
+                                <div class="w-8 h-16 bg-tertiary-fixed mt-1 rounded-b-lg shadow-sm"></div>
+                                <!-- Floating paint drops -->
+                                <div class="absolute -top-4 -right-4 w-3 h-3 bg-secondary-container rounded-full"></div>
+                                <div class="absolute top-2 -left-6 w-4 h-4 bg-primary-container rounded-full"></div>
+                                <div class="absolute top-10 -right-8 w-2 h-2 bg-tertiary-container rounded-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-2/3 z-10 text-center md:text-left">
+                        <span class="inline-block px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full font-label-bold text-[12px] uppercase tracking-wider mb-sm">Sobre el MAMB</span>
+                        <h2 class="font-headline-lg text-headline-lg text-on-surface mb-md">Museo de Arte Moderno de Barranquilla</h2>
+                        <p class="font-body-lg text-body-lg text-on-surface-variant mb-md">
+                            El MAMB Kids es un espacio diseñado especialmente para despertar la creatividad de los más pequeños. Inspirados por la vibrante cultura del Caribe colombiano, invitamos a los niños a explorar, jugar y crear su propia "Obra Maestra".
+                        </p>
+                        <button class="bg-surface text-primary font-label-bold text-label-bold px-md py-sm rounded-full border-2 border-primary-container shadow-sm hover:bg-primary-fixed-dim/10 transition-colors">
+                            Conoce más sobre el museo
+                        </button>
+                    </div>
+                </section>
+            </main>
+        </section>
+    </div>
+
+    <!-- VIEW 4: DETALLE ZOOM (MUSEO DE ARTISTA) -->
+    <section id="view-museo" class="hidden fixed inset-0 z-[100] bg-black text-white overflow-hidden flex flex-col justify-center items-center">
+        <!-- Top Navigation -->
+        <nav class="fixed top-0 w-full z-50 flex justify-between items-center px-8 py-4 bg-black/40 backdrop-blur-md">
+            <button id="close-museo-btn" class="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+                <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">arrow_back</span>
+            </button>
+            <h1 class="font-headline-md text-headline-md text-white font-bold tracking-tight">Detalle</h1>
+            <div class="w-12 h-12"></div>
+        </nav>
+
+        <!-- Main Canvas: Full Screen Artwork -->
+        <div class="absolute inset-0 w-full h-full flex items-center justify-center">
+            <img id="museo-img" alt="Pintura vibrante" class="object-contain w-full h-full max-w-[1200px] mx-auto p-4 md:p-8" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASC2r7LX-PF-kGeZ577sKyzEml9Ghi6JDMc9WEGzGaKkq1R-v9cTyFJ1VSKCoZUuWz37S6yrJMjtDf9eITCpKU-DcdBl68j_k9P4omU1NSzZPsOc-my0fAJj8V7aFfru2DA4MF7GrHDExz7y11eSqnouBIJEFM2PItJlRoblEQsZ9aJbLtLnte4fEVmWUalgmVtwtm463AYzAyxy93iPP-QqFToX5SBMlwMlGUDX4aI9eH9Y0T_bKkF0o8cYa4qSgiqXLnkRGJxw"/>
+        </div>
+
+        <!-- Floating Interactive Tools -->
+        <div class="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-unit z-40">
+            <button aria-label="Lupa" class="w-14 h-14 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shadow-[0_8px_30px_rgba(0,163,224,0.3)] hover:scale-105 active:scale-95 transition-transform">
+                <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">search</span>
+            </button>
+            <button aria-label="Información" class="w-14 h-14 rounded-full bg-white/10 text-white backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-colors mt-4">
+                <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">info</span>
+            </button>
+            <button aria-label="Favorito" class="w-14 h-14 rounded-full bg-white/10 text-white backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-colors">
+                <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 0;">favorite</span>
+            </button>
+        </div>
+
+        <!-- Floating Info Panel (Bottom) -->
+        <div class="absolute bottom-12 left-6 right-6 md:left-12 md:right-auto md:w-[400px] z-40">
+            <div class="bg-zinc-900/90 backdrop-blur-xl rounded-lg p-md shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-zinc-800">
+                <div class="flex items-start justify-between">
+                    <div>
+                        <h2 id="museo-title" class="font-headline-lg text-headline-lg text-zinc-100 mb-xs">La Danza del Mar</h2>
+                        <p id="museo-author" class="font-body-lg text-body-lg text-zinc-400">Alejandro Obregón, 1965</p>
+                    </div>
+                    <div class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full flex items-center justify-center">
+                        <span id="museo-style" class="font-label-bold text-label-bold uppercase tracking-widest text-[11px]">Óleo</span>
+                    </div>
+                </div>
+                <div class="mt-sm flex items-center gap-xs text-primary-container">
+                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">palette</span>
+                    <span class="font-body-md text-body-md font-medium">Textura visible: Impasto grueso</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Global Mobile BottomNavBar -->
+    <nav id="mobile-nav" class="fixed bottom-0 w-full rounded-t-[48px] z-50 bg-white dark:bg-gray-900 border-t border-gray-100 dark:border-gray-800 shadow-[0_-10px_40px_rgba(0,163,224,0.15)] md:hidden">
+        <div class="flex justify-around items-center px-4 pt-3 pb-8">
+            <button id="nav-btn-laboratorio" class="flex flex-col items-center justify-center bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-300 rounded-full px-6 py-2 transition-all duration-300 active:scale-125">
+                <span class="material-symbols-outlined text-2xl mb-1" style="font-variation-settings: 'FILL' 1;">palette</span>
+                <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Laboratorio</span>
+            </button>
+            <button id="nav-btn-ficha" class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 px-6 py-2 transition-all duration-300 active:scale-125">
+                <span class="material-symbols-outlined text-2xl mb-1">assignment</span>
+                <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Ficha</span>
+            </button>
+            <button id="nav-btn-galeria" class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 px-6 py-2 transition-all duration-300 active:scale-125">
+                <span class="material-symbols-outlined text-2xl mb-1">auto_awesome_motion</span>
+                <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Galería</span>
+            </button>
+            <button id="nav-btn-mamb" class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 px-6 py-2 transition-all duration-300 active:scale-125">
+                <span class="material-symbols-outlined text-2xl mb-1">museum</span>
+                <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">MAMB</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Unified SPA Controller & AI Logic -->
+    <script>
+        let model;
+        let isAnalyzing = false;
+        let currentView = 'laboratorio';
+        const URL_MODELO = "https://teachablemachine.withgoogle.com/models/8bAjMrTZW/";
+
+        // Carga del modelo TensorFlow.js
+        async function loadModel() {
+            const statusText = document.getElementById('status-text');
+            if (statusText) {
+                statusText.textContent = "Cargando cerebro de IA...";
+            }
+            try {
+                const modelURL = URL_MODELO + "model.json";
+                const metadataURL = URL_MODELO + "metadata.json";
+                model = await tmImage.load(modelURL, metadataURL);
+                if (statusText) {
+                    statusText.textContent = "Modelo cargado con éxito. ¡Listo para analizar!";
+                }
+            } catch (error) {
+                console.error("Error al cargar el modelo:", error);
+                if (statusText) {
+                    statusText.textContent = "Error al conectar con el cerebro de IA.";
+                }
+            }
+        }
+
+        // Navegación SPA
+        function showView(viewId) {
+            // Ocultar todas las secciones
+            document.getElementById('view-laboratorio').classList.add('hidden');
+            document.getElementById('view-ficha').classList.add('hidden');
+            document.getElementById('view-galeria').classList.add('hidden');
+            document.getElementById('view-museo').classList.add('hidden');
+
+            // Mostrar la sección correspondiente
+            const selectedView = document.getElementById(`view-${viewId}`);
+            if (selectedView) {
+                selectedView.classList.remove('hidden');
+            }
+
+            // Actualizar estados visuales de navegación
+            updateNavActiveStates(viewId);
+
+            // Reglas de scroll y header según la vista
+            if (viewId === 'museo') {
+                document.body.style.overflow = 'hidden';
+                document.getElementById('global-header').classList.add('hidden');
+                document.getElementById('desktop-nav').classList.add('hidden');
+            } else {
+                document.body.style.overflow = 'auto';
+                document.getElementById('global-header').classList.remove('hidden');
+                document.getElementById('desktop-nav').classList.remove('hidden');
+                currentView = viewId; // Guardar la última vista activa del día
+            }
+        }
+
+        function updateNavActiveStates(activeView) {
+            // Botones móviles
+            const mobileButtons = {
+                laboratorio: document.getElementById('nav-btn-laboratorio'),
+                ficha: document.getElementById('nav-btn-ficha'),
+                galeria: document.getElementById('nav-btn-galeria'),
+                mamb: document.getElementById('nav-btn-mamb')
+            };
+
+            // Botones escritorio
+            const desktopButtons = {
+                laboratorio: document.getElementById('desk-btn-laboratorio'),
+                ficha: document.getElementById('desk-btn-ficha'),
+                galeria: document.getElementById('desk-btn-galeria'),
+                mamb: document.getElementById('desk-btn-mamb')
+            };
+
+            // Toggle clases en menú móvil
+            for (const key in mobileButtons) {
+                const btn = mobileButtons[key];
+                if (!btn) continue;
+                
+                const icon = btn.querySelector('.material-symbols-outlined');
+                const isActive = (key === activeView) || (activeView === 'museo' && key === 'mamb');
+
+                if (isActive) {
+                    btn.classList.remove('text-gray-400', 'dark:text-gray-500');
+                    btn.classList.add('bg-sky-100', 'dark:bg-sky-900/30', 'text-sky-600', 'dark:text-sky-300');
+                    if (icon) icon.style.fontVariationSettings = "'FILL' 1";
+                } else {
+                    btn.classList.remove('bg-sky-100', 'dark:bg-sky-900/30', 'text-sky-600', 'dark:text-sky-300');
+                    btn.classList.add('text-gray-400', 'dark:text-gray-500');
+                    if (icon) icon.style.fontVariationSettings = "'FILL' 0";
+                }
+            }
+
+            // Toggle clases en menú escritorio
+            for (const key in desktopButtons) {
+                const btn = desktopButtons[key];
+                if (!btn) continue;
+
+                const isActive = (key === activeView) || (activeView === 'museo' && key === 'mamb');
+
+                if (isActive) {
+                    btn.classList.remove('text-on-surface-variant', 'hover:bg-surface-container');
+                    btn.classList.add('bg-primary-container', 'text-on-primary-container', 'shadow-sm');
+                } else {
+                    btn.classList.remove('bg-primary-container', 'text-on-primary-container', 'shadow-sm');
+                    btn.classList.add('text-on-surface-variant', 'hover:bg-surface-container');
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inicializar modelo
+            loadModel();
+
+            // Configurar botones de navegación
+            const navTriggers = [
+                { id: 'nav-btn-laboratorio', view: 'laboratorio' },
+                { id: 'nav-btn-ficha', view: 'ficha' },
+                { id: 'nav-btn-galeria', view: 'galeria' },
+                { id: 'nav-btn-mamb', view: 'museo' },
+                { id: 'desk-btn-laboratorio', view: 'laboratorio' },
+                { id: 'desk-btn-ficha', view: 'ficha' },
+                { id: 'desk-btn-galeria', view: 'galeria' },
+                { id: 'desk-btn-mamb', view: 'museo' }
+            ];
+
+            navTriggers.forEach(trigger => {
+                const btn = document.getElementById(trigger.id);
+                if (btn) {
+                    btn.addEventListener('click', () => showView(trigger.view));
+                }
+            });
+
+            // Botón cerrar vista museo/zoom
+            const closeMuseoBtn = document.getElementById('close-museo-btn');
+            if (closeMuseoBtn) {
+                closeMuseoBtn.addEventListener('click', () => {
+                    showView(currentView || 'galeria');
+                });
+            }
+
+            // Configuración del file upload controlado por el botón estético
+            const uploadBtn = document.getElementById('upload-btn');
+            const fileUploader = document.getElementById('file-uploader');
+            const previewImg = document.getElementById('preview-img');
+            const fichaImg = document.getElementById('ficha-img');
+            const joyBar = document.getElementById('joy-bar');
+            const scanline = document.getElementById('scanline');
+
+            if (uploadBtn && fileUploader) {
+                uploadBtn.addEventListener('click', () => {
+                    fileUploader.click();
+                });
+            }
+
+            if (fileUploader) {
+                fileUploader.addEventListener('change', (event) => {
+                    const file = event.target.files[0];
+                    if (file) {
+                        isAnalyzing = true;
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            if (previewImg) previewImg.src = e.target.result;
+                            if (fichaImg) fichaImg.src = e.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+
+            // Predicción automática al cargarse la imagen en el previewImg
+            if (previewImg) {
+                previewImg.onload = async () => {
+                    if (!isAnalyzing || !model) return;
+
+                    // Al iniciar el análisis, remueve la clase hidden de joy-bar y scanline
+                    if (joyBar) joyBar.classList.remove('hidden');
+                    if (scanline) {
+                        scanline.classList.remove('hidden');
+                        scanline.style.animation = 'scan 2s ease-in-out infinite';
+                    }
+
+                    try {
+                        const predictions = await model.predict(previewImg);
+                        
+                        let maxProb = -1;
+                        let winnerId = null;
+                        let winnerLabel = "";
+
+                        const styleMapping = {
+                            'sketch': { id: 'style-sketch', name: 'Sketch Pencil' },
+                            'pencil': { id: 'style-sketch', name: 'Sketch Pencil' },
+                            'watercolor': { id: 'style-watercolor', name: 'Watercolor' },
+                            'cubism': { id: 'style-cubism', name: 'Cubism' }
+                        };
+
+                        const styleIds = ['style-sketch', 'style-watercolor', 'style-cubism'];
+
+                        // Mapear los porcentajes reales a las barras
+                        predictions.forEach(prediction => {
+                            const classNameClean = prediction.className.trim().toLowerCase();
+                            const prob = prediction.probability;
+
+                            let match = null;
+                            for (const key in styleMapping) {
+                                if (classNameClean.includes(key)) {
+                                    match = styleMapping[key];
+                                    break;
+                                }
+                            }
+
+                            if (match) {
+                                const percentage = Math.round(prob * 100);
+                                const container = document.getElementById(match.id);
+                                if (container) {
+                                    const valElement = container.querySelector('.val');
+                                    if (valElement) {
+                                        valElement.textContent = `${percentage}%`;
+                                    }
+                                    const barElement = container.querySelector('.bar');
+                                    if (barElement) {
+                                        barElement.style.width = `${percentage}%`;
+                                    }
+
+                                    if (prob > maxProb) {
+                                        maxProb = prob;
+                                        winnerId = match.id;
+                                        winnerLabel = match.name;
+                                    }
+                                }
+                            }
+                        });
+
+                        // Resaltar la tarjeta ganadora
+                        styleIds.forEach(id => {
+                            const container = document.getElementById(id);
+                            if (container) {
+                                if (id === winnerId) {
+                                    container.classList.remove('bg-surface-container', 'text-on-surface-variant', 'border-transparent');
+                                    container.classList.add(
+                                        'bg-primary-fixed',
+                                        'text-on-primary-fixed',
+                                        'border-primary-container',
+                                        'shadow-[0_4px_15px_rgba(0,163,224,0.2)]'
+                                    );
+                                } else {
+                                    container.classList.remove(
+                                        'bg-primary-fixed',
+                                        'text-on-primary-fixed',
+                                        'border-primary-container',
+                                        'shadow-[0_4px_15px_rgba(0,163,224,0.2)]'
+                                    );
+                                    container.classList.add('bg-surface-container', 'text-on-surface-variant', 'border-transparent');
+                                }
+                            }
+                        });
+
+                        // Inyectar el nombre del estilo ganador en el chip de Ficha Técnica
+                        const winningChip = document.getElementById('winning-style-chip');
+                        if (winningChip) {
+                            winningChip.textContent = winnerLabel || "Estilo Detectado";
+                        }
+
+                        // Ocultar las barras y líneas de carga
+                        if (joyBar) joyBar.classList.add('hidden');
+                        if (scanline) {
+                            scanline.classList.add('hidden');
+                            scanline.style.animation = '';
+                        }
+
+                        // Realizar la transición automática a la Ficha Técnica después de 1 segundo
+                        setTimeout(() => {
+                            showView('ficha');
+                        }, 1000);
+
+                    } catch (err) {
+                        console.error('Error durante la predicción:', err);
+                        if (joyBar) joyBar.classList.add('hidden');
+                        if (scanline) {
+                            scanline.classList.add('hidden');
+                            scanline.style.animation = '';
+                        }
+                    } finally {
+                        isAnalyzing = false;
+                    }
+                };
+            }
+
+            // Interactividad de la Galería
+            const galleryCards = document.querySelectorAll('.gallery-card');
+            galleryCards.forEach(card => {
+                // Hacer clic en la tarjeta abre el detalle/museo
+                card.addEventListener('click', () => {
+                    const img = card.querySelector('img');
+                    const title = card.querySelector('.gallery-title');
+                    const author = card.querySelector('.gallery-author');
+                    const category = card.querySelector('.gallery-category');
+
+                    if (img && title && author && category) {
+                        document.getElementById('museo-img').src = img.src;
+                        document.getElementById('museo-title').textContent = title.textContent;
+                        document.getElementById('museo-author').textContent = author.textContent;
+                        document.getElementById('museo-style').textContent = category.textContent;
+                        
+                        showView('museo');
+                    }
+                });
+
+                // Manejo de Likes individuales
+                const likeBtn = card.querySelector('.like-btn');
+                const likeCount = card.querySelector('.like-count');
+
+                if (likeBtn && likeCount) {
+                    let liked = false;
+                    likeBtn.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Evitar que el clic abra la vista Detalle
+                        let count = parseInt(likeCount.textContent, 10);
+                        if (!liked) {
+                            count++;
+                            likeCount.textContent = count;
+                            likeBtn.classList.add('text-secondary', 'bg-secondary-fixed');
+                            const heartIcon = likeBtn.querySelector('.material-symbols-outlined');
+                            if (heartIcon) heartIcon.style.fontVariationSettings = "'FILL' 1";
+                            liked = true;
+                        } else {
+                            count--;
+                            likeCount.textContent = count;
+                            likeBtn.classList.remove('text-secondary', 'bg-secondary-fixed');
+                            const heartIcon = likeBtn.querySelector('.material-symbols-outlined');
+                            if (heartIcon) heartIcon.style.fontVariationSettings = "'FILL' 0";
+                            liked = false;
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
