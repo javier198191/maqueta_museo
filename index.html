@@ -875,7 +875,7 @@
             if (!galleryGrid) return;
 
             try {
-                const res = await fetch('http://localhost:3001/api/artworks');
+                const res = await fetch(`${BACKEND_URL}/api/artworks`);
                 if (!res.ok) throw new Error('Error al cargar la galería desde el servidor.');
 
                 // Extraer JSON (puede ser un array directo o venir dentro de { data: [...] })
