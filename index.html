@@ -1290,6 +1290,11 @@
                         formData.append('description', description);
                         formData.append('age', '8');
 
+                        console.log("Subiendo archivo con campo: 'image'");
+                        for (let pair of formData.entries()) {
+                            console.log(pair[0] + ': ' + (pair[1] instanceof File ? pair[1].name : pair[1]));
+                        }
+
                         const response = await fetch(`${BACKEND_URL}/api/artworks`, {
                             method: 'POST',
                             body: formData
