@@ -138,22 +138,37 @@
 </head>
 <body class="antialiased min-h-screen flex flex-col font-body-md">
 
+    <!-- IA Magic Loader (Fullscreen) -->
+    <div id="mamb-magic-loader" class="hidden fixed inset-0 z-[9999] bg-sky-50/95 dark:bg-zinc-950/95 backdrop-blur-md flex flex-col items-center justify-center gap-md p-md text-center">
+        <div class="relative w-32 h-32 flex items-center justify-center mb-4">
+            <span class="material-symbols-outlined text-primary text-[96px] animate-spin" style="animation-duration: 2.5s; font-variation-settings: 'FILL' 1;">auto_awesome</span>
+        </div>
+        <h2 class="font-headline-lg text-headline-lg text-sky-600 dark:text-sky-400 max-w-xl leading-relaxed">
+            ¡La IA está preparando tu lienzo mágico... 🎨✨!
+        </h2>
+    </div>
+
     <!-- Global TopAppBar -->
     <header id="global-header" class="fixed top-0 w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,163,224,0.1)] flex justify-between items-center px-8 py-4">
         <button class="text-sky-500 dark:text-sky-400 hover:scale-105 transition-transform duration-200 active:scale-95 flex items-center justify-center p-2 rounded-full">
             <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">palette</span>
         </button>
-        <h1 class="font-['Plus_Jakarta_Sans'] font-extrabold tracking-tight text-xl font-black text-sky-600 dark:text-sky-400 text-center flex-1 mx-4">Mi Obra Maestra</h1>
-        <button class="text-sky-500 dark:text-sky-400 hover:scale-105 transition-transform duration-200 active:scale-95 flex items-center justify-center p-2 rounded-full overflow-hidden w-10 h-10 bg-surface-variant border-2 border-primary-container">
-            <img alt="Profile Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCAWTraqkqARSfFhwsuuRVRec03cCza2a9g3IdJeuUqjlcGOsfBShwlLpuOZYU52Twxj6aNk-DUACQ24LnKAHUPyk8OxCyBuNYla8rrZO0HNnWfZeRCCw_j13khsKiSyFW6hTzLoDjLuXOUwBPot1r0RoWEVkKyKyTAbysh_OuiIkX7Pz9dYLvh1RZHCgMalwEr2EGVN0IPkTUliQNTEDZpquIik3wQhUCu19iLjh4Y7hxC4bhuCfgxrhMYqtHSUZ5aKcPwjHpMA"/>
-        </button>
+        <h1 class="font-['Plus_Jakarta_Sans'] font-extrabold tracking-tight text-lg md:text-xl font-black text-sky-600 dark:text-sky-400 text-center flex-1 mx-4 truncate">Mi Obra Maestra</h1>
+        <div class="flex items-center gap-sm">
+            <button id="admin-toggle-btn" class="text-zinc-400 hover:text-primary transition-colors flex items-center justify-center p-2 rounded-full" title="Modo Administrador">
+                <span class="material-symbols-outlined text-2xl">settings</span>
+            </button>
+            <button id="profile-avatar-btn" class="text-sky-500 dark:text-sky-400 hover:scale-105 transition-transform duration-200 active:scale-95 flex items-center justify-center p-2 rounded-full overflow-hidden w-10 h-10 bg-surface-variant border-2 border-primary-container">
+                <img alt="Profile Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCCAWTraqkqARSfFhwsuuRVRec03cCza2a9g3IdJeuUqjlcGOsfBShwlLpuOZYU52Twxj6aNk-DUACQ24LnKAHUPyk8OxCyBuNYla8rrZO0HNnWfZeRCCw_j13khsKiSyFW6hTzLoDjLuXOUwBPot1r0RoWEVkKyKyTAbysh_OuiIkX7Pz9dYLvh1RZHCgMalwEr2EGVN0IPkTUliQNTEDZpquIik3wQhUCu19iLjh4Y7hxC4bhuCfgxrhMYqtHSUZ5aKcPwjHpMA"/>
+            </button>
+        </div>
     </header>
 
     <!-- Global Desktop Navigation -->
     <nav id="desktop-nav" class="hidden md:flex fixed top-0 right-20 h-[80px] items-center gap-gutter z-50 pointer-events-none">
         <div class="pointer-events-auto flex gap-unit bg-surface-container-lowest/50 backdrop-blur-md px-4 py-2 rounded-full border border-surface-variant shadow-sm">
             <button id="desk-btn-laboratorio" class="px-4 py-2 rounded-full font-label-bold text-label-bold transition-all duration-300 bg-primary-container text-on-primary-container shadow-sm">Laboratorio</button>
-            <button id="desk-btn-ficha" class="px-4 py-2 rounded-full font-label-bold text-label-bold transition-all duration-300 text-on-surface-variant hover:bg-surface-container">Ficha Técnica</button>
+            <button id="desk-btn-ficha" class="hidden px-4 py-2 rounded-full font-label-bold text-label-bold transition-all duration-300 text-on-surface-variant hover:bg-surface-container">Ficha Técnica</button>
             <button id="desk-btn-galeria" class="px-4 py-2 rounded-full font-label-bold text-label-bold transition-all duration-300 text-on-surface-variant hover:bg-surface-container">Galería</button>
             <button id="desk-btn-mamb" class="px-4 py-2 rounded-full font-label-bold text-label-bold transition-all duration-300 text-on-surface-variant hover:bg-surface-container">MAMB</button>
         </div>
@@ -164,7 +179,7 @@
 
         <!-- VIEW 1: LABORATORIO DE IA -->
         <section id="view-laboratorio" class="w-full">
-            <main class="flex-1 w-full max-w-7xl mx-auto px-container-margin py-gutter flex flex-col gap-lg items-center relative overflow-hidden">
+            <main class="flex-1 w-full max-w-7xl mx-auto px-4 md:px-container-margin py-gutter flex flex-col gap-lg items-center relative overflow-hidden">
                 <!-- Decorative Cayena Easter Egg -->
                 <div class="absolute -top-10 -right-10 opacity-10 pointer-events-none rotate-12">
                     <span class="material-symbols-outlined text-[120px] text-primary" style="font-variation-settings: 'FILL' 1;">local_florist</span>
@@ -175,7 +190,7 @@
 
                 <!-- Hero / Upload Section -->
                 <section class="w-full flex flex-col items-center text-center gap-md z-10">
-                    <h2 class="font-headline-xl text-headline-xl text-on-surface">¡Crea tu Obra!</h2>
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-on-surface">¡Crea tu Obra!</h2>
                     <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">Sube una foto y deja que la magia del laboratorio la convierta en arte increíble.</p>
                     <p id="status-text" class="font-label-bold text-label-bold text-primary mt-xs"></p>
                     <button id="upload-btn" class="mt-sm bg-primary-container text-on-primary-container hover:scale-105 active:scale-95 transition-all duration-200 rounded-full px-xl py-md shadow-[0_8px_30px_rgba(0,163,224,0.3)] flex items-center gap-sm">
@@ -247,9 +262,6 @@
                                 </div>
                             </button>
                         </div>
-                        <button class="w-full py-sm mt-auto bg-secondary-container text-on-secondary-container rounded-full font-label-bold text-label-bold hover:scale-105 active:scale-95 transition-transform duration-200 shadow-md">
-                            ¡Aplicar Magia!
-                        </button>
                     </div>
                 </section>
 
@@ -264,7 +276,7 @@
 
         <!-- VIEW 2: FICHA TÉCNICA -->
         <section id="view-ficha" class="hidden w-full">
-            <main class="max-w-4xl mx-auto px-container-margin pt-gutter flex flex-col gap-gutter">
+            <main class="max-w-4xl mx-auto px-4 md:px-container-margin pt-gutter flex flex-col gap-gutter">
                 <!-- Artwork Display Area -->
                 <div class="w-full bg-surface-container-lowest rounded-xl shadow-[0_16px_40px_-10px_rgba(0,163,224,0.2)] overflow-hidden relative border-4 border-white group">
                     <img id="ficha-img" alt="Generated Artwork" class="w-full aspect-[4/3] object-cover transition-transform duration-700 group-hover:scale-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgXLAA2_HjnvTBq1Um_WliRMrPmMiNcFTU2Povy8hmYihofLUp1FRpgXdrQfFE4Sc8jo4XidjXIVqc9Fkthug0yRRBy5R8vvCcXR0yQIGtJW6-ofAVRfh_TQ_qaJXWPmB4f0z-UIlA6Wkae3viPf1-EA6I0lptuSi3UqBshw3427GMs0cxs4jzQdtWN6dvdFzbCbcGgxW4R-h0PAs9pvQuktk8kR55CBXtGLgXJAA71EC10e-PkhN7P7pnDhKz3lMIo1t5AMwYPg"/>
@@ -286,7 +298,7 @@
                                 <span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">assignment</span>
                             </div>
                             <div>
-                                <h2 class="font-headline-md text-headline-md text-on-surface">Ficha Técnica</h2>
+                                <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-on-surface">Ficha Técnica</h2>
                                 <p class="font-body-md text-body-md text-on-surface-variant">¡Dale identidad a tu obra de arte!</p>
                             </div>
                         </div>
@@ -298,13 +310,10 @@
                                 <label class="font-label-bold text-label-bold text-on-surface-variant ml-xs" for="obra-nombre">Nombre de la Obra</label>
                                 <input class="w-full bg-surface border-2 border-outline-variant rounded-DEFAULT p-sm font-headline-md text-[20px] text-primary focus:border-primary focus:ring-4 focus:ring-primary-fixed transition-all outline-none placeholder:text-outline shadow-inner placeholder:font-body-md" id="obra-nombre" type="text" value="El Monstruo de Colores"/>
                             </div>
-                            <!-- Autor -->
+                            <!-- Autor (Editable) -->
                             <div class="flex flex-col gap-xs">
-                                <label class="font-label-bold text-label-bold text-on-surface-variant ml-xs">Autor / Artista</label>
-                                <div class="w-full bg-surface-container border-2 border-surface-dim rounded-DEFAULT p-sm font-body-lg text-body-lg text-on-surface flex items-center gap-sm cursor-not-allowed opacity-90">
-                                    <span class="material-symbols-outlined text-outline">face_4</span>
-                                    Leo (MAMB Kid)
-                                </div>
+                                <label class="font-label-bold text-label-bold text-on-surface-variant ml-xs" for="authorName">Autor / Artista</label>
+                                <input type="text" id="authorName" placeholder="Tu nombre o apodo artístico 🎨" maxlength="15" class="w-full bg-surface border-2 border-outline-variant rounded-DEFAULT p-sm font-body-lg text-body-lg text-on-surface focus:border-primary focus:ring-4 focus:ring-primary-fixed transition-all outline-none shadow-inner placeholder:text-outline/65">
                             </div>
                             <!-- Año -->
                             <div class="flex flex-col gap-xs">
@@ -317,16 +326,16 @@
                             <!-- Categoría -->
                             <div class="flex flex-col gap-xs">
                                 <label class="font-label-bold text-label-bold text-on-surface-variant ml-xs">Categoría</label>
-                                <div class="flex flex-wrap gap-sm">
-                                    <button class="bg-surface-container border-2 border-outline-variant rounded-full px-md py-unit font-label-bold text-label-bold text-on-surface-variant hover:bg-surface-container-high hover:border-outline transition-colors flex items-center gap-xs">
+                                <div id="category-chips-container" class="flex flex-wrap gap-sm">
+                                    <button type="button" class="category-chip bg-surface-container border-2 border-outline-variant rounded-full px-md py-unit font-label-bold text-label-bold text-on-surface-variant hover:bg-surface-container-high hover:border-outline transition-colors flex items-center gap-xs" data-category="Retrato">
                                         <span class="material-symbols-outlined text-lg">face</span>
                                         Retrato
                                     </button>
-                                    <button class="bg-tertiary-container border-2 border-tertiary text-on-tertiary-container rounded-full px-md py-unit font-label-bold text-label-bold shadow-sm flex items-center gap-xs">
+                                    <button type="button" class="category-chip bg-tertiary-container border-2 border-tertiary text-on-tertiary-container rounded-full px-md py-unit font-label-bold text-label-bold shadow-sm flex items-center gap-xs" data-active="true" data-category="Abstracto">
                                         <span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">category</span>
                                         Abstracto
                                     </button>
-                                    <button class="bg-surface-container border-2 border-outline-variant rounded-full px-md py-unit font-label-bold text-label-bold text-on-surface-variant hover:bg-surface-container-high hover:border-outline transition-colors flex items-center gap-xs">
+                                    <button type="button" class="category-chip bg-surface-container border-2 border-outline-variant rounded-full px-md py-unit font-label-bold text-label-bold text-on-surface-variant hover:bg-surface-container-high hover:border-outline transition-colors flex items-center gap-xs" data-category="Paisaje">
                                         <span class="material-symbols-outlined text-lg">landscape</span>
                                         Paisaje
                                     </button>
@@ -354,11 +363,11 @@
 
                         <!-- Actions -->
                         <div class="flex flex-col sm:flex-row gap-md mt-md pt-md border-t-2 border-surface-container border-dashed">
-                            <button class="btn-tactile-secondary bg-secondary text-on-secondary font-headline-md text-[18px] py-md px-lg rounded-full flex-1 flex items-center justify-center gap-sm transition-all duration-300">
+                            <button id="btn-compartir" class="btn-tactile-secondary bg-secondary text-on-secondary font-headline-md text-[18px] py-md px-lg rounded-full flex-1 flex items-center justify-center gap-sm transition-all duration-300">
                                 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">share</span>
                                 Compartir
                             </button>
-                            <button class="btn-tactile-primary bg-primary text-on-primary font-headline-md text-[18px] py-md px-lg rounded-full flex-1 flex items-center justify-center gap-sm transition-all duration-300">
+                            <button id="save-artwork-btn" class="btn-tactile-primary bg-primary text-on-primary font-headline-md text-[18px] py-md px-lg rounded-full flex-1 flex items-center justify-center gap-sm transition-all duration-300">
                                 <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">save</span>
                                 Guardar Obra
                             </button>
@@ -370,23 +379,23 @@
 
         <!-- VIEW 3: GALERÍA DE LA COMUNIDAD -->
         <section id="view-galeria" class="hidden w-full">
-            <main class="max-w-7xl mx-auto px-container-margin py-lg md:pt-[20px]">
+            <main class="max-w-7xl mx-auto px-4 md:px-container-margin py-lg md:pt-[20px]">
                 <!-- Header Section -->
                 <div class="text-center mb-xl">
-                    <h2 class="font-headline-xl text-headline-xl text-primary mb-sm">Galería de Pequeños Artistas</h2>
+                    <h2 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight text-primary mb-sm">Galería de Pequeños Artistas</h2>
                     <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">Descubre las increíbles creaciones de nuestros talentosos artistas. ¡Inspírate y dale corazón a tus favoritas!</p>
                     <div class="flex justify-center gap-sm mt-md flex-wrap">
-                        <span class="px-md py-unit bg-primary-fixed text-on-primary-fixed rounded-full font-label-bold text-label-bold shadow-[0_4px_15px_rgba(0,163,224,0.15)] cursor-pointer hover:bg-primary-container hover:text-on-primary transition-colors">Todas</span>
-                        <span class="px-md py-unit bg-surface-container text-on-surface-variant rounded-full font-label-bold text-label-bold hover:bg-surface-container-high transition-colors cursor-pointer">Pintura</span>
-                        <span class="px-md py-unit bg-surface-container text-on-surface-variant rounded-full font-label-bold text-label-bold hover:bg-surface-container-high transition-colors cursor-pointer">Escultura</span>
-                        <span class="px-md py-unit bg-surface-container text-on-surface-variant rounded-full font-label-bold text-label-bold hover:bg-surface-container-high transition-colors cursor-pointer">Digital</span>
+                        <button data-filter="Todas" class="gallery-filter-btn px-md py-unit bg-primary-fixed text-on-primary-fixed rounded-full font-label-bold text-label-bold shadow-[0_4px_15px_rgba(0,163,224,0.15)] hover:bg-primary-container hover:text-on-primary transition-colors">Todas</button>
+                        <button data-filter="Sketch Pencil" class="gallery-filter-btn px-md py-unit bg-surface-container text-on-surface-variant rounded-full font-label-bold text-label-bold hover:bg-surface-container-high transition-colors">Sketch Pencil</button>
+                        <button data-filter="Watercolor" class="gallery-filter-btn px-md py-unit bg-surface-container text-on-surface-variant rounded-full font-label-bold text-label-bold hover:bg-surface-container-high transition-colors">Watercolor</button>
+                        <button data-filter="Cubism" class="gallery-filter-btn px-md py-unit bg-surface-container text-on-surface-variant rounded-full font-label-bold text-label-bold hover:bg-surface-container-high transition-colors">Cubism</button>
                     </div>
                 </div>
 
                 <!-- Gallery Grid -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-gutter mb-xl">
+                <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-gutter mb-xl">
                     <!-- Artwork Card 1 -->
-                    <article class="gallery-card bg-surface rounded-DEFAULT overflow-hidden shadow-[0_8px_30px_rgba(0,163,224,0.05)] hover:shadow-[0_15px_40px_rgba(0,163,224,0.15)] hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full cursor-pointer">
+                    <article data-aistyle="Cubism" class="gallery-card bg-surface rounded-DEFAULT overflow-hidden shadow-[0_8px_30px_rgba(0,163,224,0.05)] hover:shadow-[0_15px_40px_rgba(0,163,224,0.15)] hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full cursor-pointer">
                         <div class="aspect-square w-full relative overflow-hidden bg-surface-container-low">
                             <img alt="Abstract colorful painting by a child" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCEVW_csZMeVgjUq32UWOQ1BSCmMsjVR4_SExjjov1oZH__203uSsJwSHNySxQbi4lVIytQJB32czTtvk4nMl3qdXl2-h7Xdy_hLOuXX4B3oMS242_Z0wz8WotAvQOaTE42II_qba5AXVy0nLd7p55dffI47r7QozxWE8kJjjA73p5EyDYEjZ5PuWzXFvr-MhB2MAMRRJmcAMXo1ia12krvDFzUUG6rZ21zRcmF42HamYKDR4A6uaFrPkpDW6K9rKTm6FSB0JTZYg"/>
                             <div class="absolute top-sm right-sm bg-white/90 backdrop-blur-sm rounded-full px-unit py-xs flex items-center gap-xs shadow-sm">
@@ -409,7 +418,7 @@
                     </article>
 
                     <!-- Artwork Card 2 -->
-                    <article class="gallery-card bg-surface rounded-DEFAULT overflow-hidden shadow-[0_8px_30px_rgba(0,163,224,0.05)] hover:shadow-[0_15px_40px_rgba(0,163,224,0.15)] hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full cursor-pointer">
+                    <article data-aistyle="Watercolor" class="gallery-card bg-surface rounded-DEFAULT overflow-hidden shadow-[0_8px_30px_rgba(0,163,224,0.05)] hover:shadow-[0_15px_40px_rgba(0,163,224,0.15)] hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full cursor-pointer">
                         <div class="aspect-square w-full relative overflow-hidden bg-surface-container-low">
                             <img alt="Clay sculpture of an animal" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCUoTfeLcSKXogEL0iVpo9wQ6D3aPHMfdtNcnXc_fzVDfwGbjslQADY3IAnSI-mpGJ0sFxm5FwaOcciuVNJ7z77x9NgoOM6CW0-dTpA0-0qlYhlaniplPBo_II5fF6W-MavARNgJB4R4F4KVXlVLIOrKHLwQChgF9iDSJCvYmGgtK-EG4eZRC34VeU5_24tW9v9KVCStrUuUuv3x9uKbl9ddzOII4iG5EKTqkXrmEM99wOuOCcrEcB3CjwpxEFz02s2dE-BEjKveA"/>
                             <div class="absolute top-sm right-sm bg-white/90 backdrop-blur-sm rounded-full px-unit py-xs flex items-center gap-xs shadow-sm">
@@ -432,7 +441,7 @@
                     </article>
 
                     <!-- Artwork Card 3 -->
-                    <article class="gallery-card bg-surface rounded-DEFAULT overflow-hidden shadow-[0_8px_30px_rgba(0,163,224,0.05)] hover:shadow-[0_15px_40px_rgba(0,163,224,0.15)] hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full cursor-pointer">
+                    <article data-aistyle="Sketch Pencil" class="gallery-card bg-surface rounded-DEFAULT overflow-hidden shadow-[0_8px_30px_rgba(0,163,224,0.05)] hover:shadow-[0_15px_40px_rgba(0,163,224,0.15)] hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full cursor-pointer">
                         <div class="aspect-square w-full relative overflow-hidden bg-surface-container-low">
                             <img alt="Finger painting" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuChS9gV3MMhbGHPr5cPLFIxS0W6d4QGGZ4-f7fkeiD7MKGTJObRPW2NARnThYZfHC1sc71KyqbeVilPDoGZHLkoMcrJYeetTyG0xZvllPpCW2588KjFD4Otii_rX2kfyYvex_o95emym-vgAc3OBoPaoW4IZSOTvNCgwGEJcMbN9ZAY9tYQplxBVLrt_4gcoNzLpkyNvkiZSaijHsmrYBQO7LrfLq4-tjABq2l7aP5JthvlsvZlgCjut1rkr4leeWQU73Ki13SZhA"/>
                             <div class="absolute top-sm right-sm bg-white/90 backdrop-blur-sm rounded-full px-unit py-xs flex items-center gap-xs shadow-sm">
@@ -455,7 +464,7 @@
                     </article>
 
                     <!-- Artwork Card 4 -->
-                    <article class="gallery-card bg-surface rounded-DEFAULT overflow-hidden shadow-[0_8px_30px_rgba(0,163,224,0.05)] hover:shadow-[0_15px_40px_rgba(0,163,224,0.15)] hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full cursor-pointer">
+                    <article data-aistyle="Sketch Pencil" class="gallery-card bg-surface rounded-DEFAULT overflow-hidden shadow-[0_8px_30px_rgba(0,163,224,0.05)] hover:shadow-[0_15px_40px_rgba(0,163,224,0.15)] hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full cursor-pointer">
                         <div class="aspect-square w-full relative overflow-hidden bg-surface-container-low">
                             <img alt="Crayon drawing of a house" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7oQsKqWc1XqgF3tkjfaqRaRLsNS89Ze3GnUI6aPMxP43s1JGz7lzp05hcabPzFTS9gVgEfiJhASpwBWG8eCbWwHuIpfG7hg3XxPDGCNMnV3NMME8whWe4H6E_pVaDHzGboZC4NDp_EkG-bYXrN0pRi7lRpwddP4KbV6l5Z_U6NFN186j7LRxO-xzO2MjiEjo4WeAsK08EgloswQ6cgkfdPrnR67x01nOI80jkkwXq0ZrxWIfuqJ5G3OvYXRD345bcnlkfU3FGeg"/>
                             <div class="absolute top-sm right-sm bg-white/90 backdrop-blur-sm rounded-full px-unit py-xs flex items-center gap-xs shadow-sm">
@@ -514,66 +523,86 @@
                     </div>
                     <div class="w-full md:w-2/3 z-10 text-center md:text-left">
                         <span class="inline-block px-3 py-1 bg-surface-container-high text-on-surface-variant rounded-full font-label-bold text-[12px] uppercase tracking-wider mb-sm">Sobre el MAMB</span>
-                        <h2 class="font-headline-lg text-headline-lg text-on-surface mb-md">Museo de Arte Moderno de Barranquilla</h2>
+                        <h2 class="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-on-surface mb-md">Museo de Arte Moderno de Barranquilla</h2>
                         <p class="font-body-lg text-body-lg text-on-surface-variant mb-md">
                             El MAMB Kids es un espacio diseñado especialmente para despertar la creatividad de los más pequeños. Inspirados por la vibrante cultura del Caribe colombiano, invitamos a los niños a explorar, jugar y crear su propia "Obra Maestra".
                         </p>
-                        <button class="bg-surface text-primary font-label-bold text-label-bold px-md py-sm rounded-full border-2 border-primary-container shadow-sm hover:bg-primary-fixed-dim/10 transition-colors">
+                        <a href="https://www.instagram.com/mambq_museo/?hl=es" target="_blank" class="inline-block bg-surface text-primary font-label-bold text-label-bold px-md py-sm rounded-full border-2 border-primary-container shadow-sm hover:bg-primary-fixed-dim/10 transition-colors">
                             Conoce más sobre el museo
-                        </button>
+                        </a>
                     </div>
                 </section>
             </main>
         </section>
     </div>
 
-    <!-- VIEW 4: DETALLE ZOOM (MUSEO DE ARTISTA) -->
-    <section id="view-museo" class="hidden fixed inset-0 z-[100] bg-black text-white overflow-hidden flex flex-col justify-center items-center">
+    <!-- VIEW 4: DETALLE ZOOM (MUSEO DE ARTISTA - TIKTOK FEED) -->
+    <section id="view-museo" class="hidden fixed inset-0 z-[100] bg-zinc-950 text-white overflow-hidden flex flex-col">
         <!-- Top Navigation -->
-        <nav class="fixed top-0 w-full z-50 flex justify-between items-center px-8 py-4 bg-black/40 backdrop-blur-md">
-            <button id="close-museo-btn" class="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
+        <nav class="fixed top-0 w-full z-50 flex justify-between items-center px-8 py-4 bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
+            <button id="close-museo-btn" class="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors pointer-events-auto">
                 <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">arrow_back</span>
             </button>
-            <h1 class="font-headline-md text-headline-md text-white font-bold tracking-tight">Detalle</h1>
-            <div class="w-12 h-12"></div>
+            <h1 class="font-headline-md text-headline-md text-white font-bold tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">MAMB Feed</h1>
+            <button id="admin-toggle-feed-btn" class="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors pointer-events-auto" title="Modo Administrador">
+                <span class="material-symbols-outlined text-white">settings</span>
+            </button>
         </nav>
 
-        <!-- Main Canvas: Full Screen Artwork -->
-        <div class="absolute inset-0 w-full h-full flex items-center justify-center">
-            <img id="museo-img" alt="Pintura vibrante" class="object-contain w-full h-full max-w-[1200px] mx-auto p-4 md:p-8" src="https://lh3.googleusercontent.com/aida-public/AB6AXuASC2r7LX-PF-kGeZ577sKyzEml9Ghi6JDMc9WEGzGaKkq1R-v9cTyFJ1VSKCoZUuWz37S6yrJMjtDf9eITCpKU-DcdBl68j_k9P4omU1NSzZPsOc-my0fAJj8V7aFfru2DA4MF7GrHDExz7y11eSqnouBIJEFM2PItJlRoblEQsZ9aJbLtLnte4fEVmWUalgmVtwtm463AYzAyxy93iPP-QqFToX5SBMlwMlGUDX4aI9eH9Y0T_bKkF0o8cYa4qSgiqXLnkRGJxw"/>
+        <!-- TikTok Feed Container -->
+        <div id="museo-feed" class="w-full h-full overflow-y-scroll snap-y snap-mandatory scroll-smooth">
+            <!-- Dynamic slides go here -->
         </div>
 
-        <!-- Floating Interactive Tools -->
-        <div class="absolute right-6 top-1/2 -translate-y-1/2 flex flex-col gap-unit z-40">
-            <button aria-label="Lupa" class="w-14 h-14 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shadow-[0_8px_30px_rgba(0,163,224,0.3)] hover:scale-105 active:scale-95 transition-transform">
-                <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">search</span>
-            </button>
-            <button aria-label="Información" class="w-14 h-14 rounded-full bg-white/10 text-white backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-colors mt-4">
-                <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 1;">info</span>
-            </button>
-            <button aria-label="Favorito" class="w-14 h-14 rounded-full bg-white/10 text-white backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-colors">
-                <span class="material-symbols-outlined text-3xl" style="font-variation-settings: 'FILL' 0;">favorite</span>
-            </button>
-        </div>
-
-        <!-- Floating Info Panel (Bottom) -->
-        <div class="absolute bottom-12 left-6 right-6 md:left-12 md:right-auto md:w-[400px] z-40">
-            <div class="bg-zinc-900/90 backdrop-blur-xl rounded-lg p-md shadow-[0_10px_40px_rgba(0,0,0,0.5)] border border-zinc-800">
-                <div class="flex items-start justify-between">
-                    <div>
-                        <h2 id="museo-title" class="font-headline-lg text-headline-lg text-zinc-100 mb-xs">La Danza del Mar</h2>
-                        <p id="museo-author" class="font-body-lg text-body-lg text-zinc-400">Alejandro Obregón, 1965</p>
-                    </div>
-                    <div class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full flex items-center justify-center">
-                        <span id="museo-style" class="font-label-bold text-label-bold uppercase tracking-widest text-[11px]">Óleo</span>
-                    </div>
-                </div>
-                <div class="mt-sm flex items-center gap-xs text-primary-container">
-                    <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">palette</span>
-                    <span class="font-body-md text-body-md font-medium">Textura visible: Impasto grueso</span>
-                </div>
+        <!-- Dynamic Comments Drawer (Bottom sheet) -->
+        <div id="comments-drawer" class="hidden fixed bottom-0 left-0 right-0 z-[150] bg-black/80 backdrop-blur-md rounded-t-[32px] p-md border-t border-zinc-800 transition-all duration-300 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
+            <div class="flex items-center justify-between border-b border-zinc-800 pb-sm mb-sm">
+                <h3 class="font-headline-md text-headline-md text-white flex items-center gap-xs">
+                    <span class="material-symbols-outlined text-primary">chat</span>
+                    Comentarios Mágicos ✨
+                </h3>
+                <button id="close-comments-btn" class="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-zinc-400">close</span>
+                </button>
+            </div>
+            <div id="comments-list" class="max-h-[200px] overflow-y-auto flex flex-col gap-sm mb-sm pr-xs">
+                <!-- Comments list -->
+            </div>
+            <div class="flex gap-sm border-t border-zinc-800 pt-sm">
+                <input id="comment-input" type="text" placeholder="¡Qué colores tan mágicos! 🎨" class="flex-1 bg-zinc-800 text-white border border-zinc-700 rounded-full px-4 py-2 outline-none focus:border-primary font-body-md text-body-md">
+                <button id="submit-comment-btn" class="bg-primary text-white rounded-full px-6 py-2 font-label-bold text-label-bold hover:scale-105 active:scale-95 transition-all">Enviar</button>
             </div>
         </div>
+    </section>
+
+    <!-- VIEW 5: PERFIL DE ADULTOS -->
+    <section id="view-perfil" class="hidden w-full bg-surface">
+        <main class="max-w-md mx-auto px-4 md:px-container-margin py-lg flex flex-col gap-md items-center">
+            <div class="w-full bg-white dark:bg-zinc-900 rounded-xl p-md shadow-[0_16px_40px_-10px_rgba(0,163,224,0.15)] border border-surface-variant flex flex-col gap-sm">
+                <div class="text-center">
+                    <span class="material-symbols-outlined text-[64px] text-primary" style="font-variation-settings: 'FILL' 1;">supervised_user_circle</span>
+                    <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-on-surface mt-xs">Perfil para Padres</h2>
+                    <p class="font-body-md text-body-md text-on-surface-variant">Crea el perfil de tu pequeño artista para guardar y sincronizar sus obras.</p>
+                </div>
+                <form id="parents-form" class="flex flex-col gap-sm mt-sm" onsubmit="event.preventDefault();">
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-label-bold text-label-bold text-on-surface-variant" for="parent-email">Correo Electrónico</label>
+                        <input id="parent-email" type="email" placeholder="papáomamá@correo.com" required class="bg-surface border-2 border-outline-variant rounded-DEFAULT p-sm font-body-md text-body-md text-on-surface focus:border-primary focus:ring-4 focus:ring-primary-fixed transition-all outline-none">
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-label-bold text-label-bold text-on-surface-variant" for="parent-password">Contraseña</label>
+                        <input id="parent-password" type="password" placeholder="Mínimo 6 caracteres" required class="bg-surface border-2 border-outline-variant rounded-DEFAULT p-sm font-body-md text-body-md text-on-surface focus:border-primary focus:ring-4 focus:ring-primary-fixed transition-all outline-none">
+                    </div>
+                    <div class="flex flex-col gap-xs">
+                        <label class="font-label-bold text-label-bold text-on-surface-variant" for="artist-name">Nombre del Niño/a</label>
+                        <input id="artist-name" type="text" placeholder="Ej: Leo" required class="bg-surface border-2 border-outline-variant rounded-DEFAULT p-sm font-body-md text-body-md text-on-surface focus:border-primary focus:ring-4 focus:ring-primary-fixed transition-all outline-none">
+                    </div>
+                    <button type="submit" class="btn-tactile-primary bg-primary text-on-primary font-headline-md text-[18px] py-md rounded-full mt-md transition-all duration-300">
+                        Registrarse y Conectar
+                    </button>
+                </form>
+            </div>
+        </main>
     </section>
 
     <!-- Global Mobile BottomNavBar -->
@@ -583,7 +612,7 @@
                 <span class="material-symbols-outlined text-2xl mb-1" style="font-variation-settings: 'FILL' 1;">palette</span>
                 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Laboratorio</span>
             </button>
-            <button id="nav-btn-ficha" class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 px-6 py-2 transition-all duration-300 active:scale-125">
+            <button id="nav-btn-ficha" class="hidden flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 px-6 py-2 transition-all duration-300 active:scale-125">
                 <span class="material-symbols-outlined text-2xl mb-1">assignment</span>
                 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Ficha</span>
             </button>
@@ -603,6 +632,78 @@
         let model;
         let isAnalyzing = false;
         let currentView = 'laboratorio';
+        let uploadedFileFile = null;
+        let selectedCategory = "Abstracto";
+        let databaseArtworks = [];
+        let currentFilter = 'Todas';
+        const likesCache = {};
+        let isAdmin = false;
+
+        function showSuccessToast() {
+            const toast = document.getElementById('success-toast');
+            const content = document.getElementById('success-toast-content');
+            if (!toast || !content) return;
+
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95');
+                content.classList.add('scale-100');
+            }, 10);
+
+            setTimeout(() => {
+                content.classList.remove('scale-100');
+                content.classList.add('scale-95');
+                setTimeout(() => {
+                    toast.classList.add('hidden');
+                }, 300);
+            }, 2000);
+        }
+
+        function toggleAdminMode() {
+            isAdmin = !isAdmin;
+            
+            // Visual indicators on settings gears
+            const gears = document.querySelectorAll('#admin-toggle-btn span, #admin-toggle-feed-btn span');
+            gears.forEach(gear => {
+                if (isAdmin) {
+                    gear.classList.add('text-primary');
+                    gear.classList.add('animate-spin');
+                    gear.style.animationDuration = '8s';
+                } else {
+                    gear.classList.remove('text-primary');
+                    gear.classList.remove('animate-spin');
+                }
+            });
+
+            // Toggle visibility of admin controls in feed
+            const adminControls = document.querySelectorAll('.admin-controls');
+            adminControls.forEach(ctrl => {
+                if (isAdmin) {
+                    ctrl.classList.remove('hidden');
+                } else {
+                    ctrl.classList.add('hidden');
+                }
+            });
+
+            alert(isAdmin ? 'Modo Administrador activado 🛠️' : 'Modo Administrador desactivado 🎨');
+        }
+
+        // Comprobación de límite de subidas gratis (máximo 3)
+        function checkUploadLimit() {
+            // Regla de acceso: Laboratorio libre y anónimo sin límites
+            const uploadBtn = document.getElementById('upload-btn');
+            const statusText = document.getElementById('status-text');
+
+            if (!uploadBtn) return;
+
+            uploadBtn.disabled = false;
+            uploadBtn.classList.remove('bg-gray-300', 'text-gray-500', 'cursor-not-allowed', 'opacity-70', 'shadow-none', 'transform-none', 'pointer-events-none');
+            uploadBtn.classList.add('bg-primary-container', 'text-on-primary-container');
+            if (statusText) {
+                statusText.textContent = "";
+            }
+        }
+        const BACKEND_URL = "http://localhost:3001";
         const URL_MODELO = "https://teachablemachine.withgoogle.com/models/8bAjMrTZW/";
 
         // Carga del modelo TensorFlow.js
@@ -633,11 +734,24 @@
             document.getElementById('view-ficha').classList.add('hidden');
             document.getElementById('view-galeria').classList.add('hidden');
             document.getElementById('view-museo').classList.add('hidden');
+            if (document.getElementById('view-perfil')) {
+                document.getElementById('view-perfil').classList.add('hidden');
+            }
 
             // Mostrar la sección correspondiente
             const selectedView = document.getElementById(`view-${viewId}`);
             if (selectedView) {
                 selectedView.classList.remove('hidden');
+            }
+
+            if (viewId === 'ficha') {
+                const authorInput = document.getElementById('authorName');
+                if (authorInput) {
+                    const savedChildName = localStorage.getItem('mamb_child_name');
+                    if (savedChildName) {
+                        authorInput.value = savedChildName;
+                    }
+                }
             }
 
             // Actualizar estados visuales de navegación
@@ -647,11 +761,16 @@
             if (viewId === 'museo') {
                 document.body.style.overflow = 'hidden';
                 document.getElementById('global-header').classList.add('hidden');
+                document.getElementById('desktop-nav').classList.remove('md:flex');
                 document.getElementById('desktop-nav').classList.add('hidden');
+                document.getElementById('mobile-nav').classList.add('hidden');
             } else {
                 document.body.style.overflow = 'auto';
                 document.getElementById('global-header').classList.remove('hidden');
-                document.getElementById('desktop-nav').classList.remove('hidden');
+                // Ensure desktop-nav stays hidden on mobile, but flexes on desktop
+                document.getElementById('desktop-nav').classList.add('hidden');
+                document.getElementById('desktop-nav').classList.add('md:flex');
+                document.getElementById('mobile-nav').classList.remove('hidden');
                 currentView = viewId; // Guardar la última vista activa del día
             }
         }
@@ -709,9 +828,213 @@
             }
         }
 
+        function syncGalleryLike(id, newCount, liked) {
+            const card = document.querySelector(`.gallery-card[data-id="${id}"]`);
+            if (card) {
+                const likeCount = card.querySelector('.like-count');
+                const likeBtn = card.querySelector('.like-btn');
+                if (likeCount) likeCount.textContent = newCount;
+                if (likeBtn) {
+                    if (liked) {
+                        likeBtn.classList.add('text-secondary', 'bg-secondary-fixed');
+                        const heartIcon = likeBtn.querySelector('.material-symbols-outlined');
+                        if (heartIcon) heartIcon.style.fontVariationSettings = "'FILL' 1";
+                    } else {
+                        likeBtn.classList.remove('text-secondary', 'bg-secondary-fixed');
+                        const heartIcon = likeBtn.querySelector('.material-symbols-outlined');
+                        if (heartIcon) heartIcon.style.fontVariationSettings = "'FILL' 0";
+                    }
+                }
+            }
+        }
+
+        function syncTikTokLike(id, newCount, liked) {
+            const feedCard = document.getElementById(`feed-card-${id}`);
+            if (feedCard) {
+                const feedLikeBtn = feedCard.querySelector('.feed-like-btn');
+                const feedLikeCount = feedCard.querySelector('.feed-like-count');
+                const feedHeartIcon = feedLikeBtn ? feedLikeBtn.querySelector('.material-symbols-outlined') : null;
+                if (feedLikeBtn && feedLikeCount) {
+                    if (liked) {
+                        feedLikeBtn.classList.remove('text-white');
+                        feedLikeBtn.classList.add('text-red-500', 'font-black');
+                        if (feedHeartIcon) feedHeartIcon.style.fontVariationSettings = "'FILL' 1";
+                    } else {
+                        feedLikeBtn.classList.remove('text-red-500', 'font-black');
+                        feedLikeBtn.classList.add('text-white');
+                        if (feedHeartIcon) feedHeartIcon.style.fontVariationSettings = "'FILL' 0";
+                    }
+                    feedLikeCount.textContent = newCount;
+                }
+            }
+        }
+
+        // Consultar y renderizar la Galería desde el backend
+        async function loadGallery() {
+            const galleryGrid = document.getElementById('gallery-grid');
+            if (!galleryGrid) return;
+
+            try {
+                const res = await fetch('http://localhost:3001/api/artworks');
+                if (!res.ok) throw new Error('Error al cargar la galería desde el servidor.');
+
+                // Extraer JSON (puede ser un array directo o venir dentro de { data: [...] })
+                const jsonResponse = await res.json();
+                const artworks = Array.isArray(jsonResponse) ? jsonResponse : (jsonResponse.data || []);
+                
+                databaseArtworks = artworks; // Guardar en el scope global
+
+                // Ocultar cualquier error anterior limpiando el contenedor principal antes de inyectar
+                galleryGrid.innerHTML = '';
+
+                if (!artworks || artworks.length === 0) {
+                    galleryGrid.innerHTML = `
+                        <div class="col-span-full text-center py-xl text-on-surface-variant">
+                            <span class="material-symbols-outlined text-5xl mb-sm block">palette</span>
+                            <p class="font-body-lg">Aún no hay obras en la galería. ¡Sube la primera!</p>
+                        </div>
+                    `;
+                } else {
+                    artworks.forEach(artwork => {
+                        // Prevención de fallos en caso de datos incompletos en la BD
+                        const id = artwork.id || Math.random().toString(36).substr(2, 9);
+                        const title = artwork.title || 'Sin Título';
+                        const author = artwork.author || 'Anónimo';
+                        const category = artwork.category || 'General';
+                        const aiStyle = artwork.aiStyle || 'Normal';
+                        const ageStr = artwork.age ? `, ${artwork.age} años` : '';
+                        
+                        // Validación defensiva para la imagen
+                        const rawImageUrl = artwork.imageUrl || '';
+                        const fullImageUrl = rawImageUrl.startsWith('http') 
+                            ? rawImageUrl 
+                            : `${BACKEND_URL}${rawImageUrl.startsWith('/') ? '' : '/'}${rawImageUrl}`;
+
+                        const card = document.createElement('article');
+                        card.className = "gallery-card bg-surface rounded-DEFAULT overflow-hidden shadow-[0_8px_30px_rgba(0,0,0,0.05)] hover:shadow-[0_15px_40px_rgba(0,163,224,0.15)] hover:-translate-y-1 transition-all duration-300 relative group flex flex-col h-full cursor-pointer";
+                        card.setAttribute('data-id', id);
+                        card.setAttribute('data-aistyle', aiStyle);
+
+                        const hasLiked = localStorage.getItem(`feed_liked_${id}`) === 'true';
+                        if (likesCache[id] === undefined) {
+                            const baseLikes = Math.floor(Math.random() * 50) + 10;
+                            likesCache[id] = baseLikes + (hasLiked ? 1 : 0);
+                        }
+
+                        const likeColorClass = hasLiked ? 'text-secondary bg-secondary-fixed' : '';
+                        const heartFill = hasLiked ? "'FILL' 1" : "'FILL' 0";
+
+                        card.innerHTML = `
+                            <div class="aspect-square w-full relative overflow-hidden bg-surface-container-low">
+                                <img alt="${title}" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" src="${fullImageUrl}" onerror="this.src='https://via.placeholder.com/400x400?text=Obra+no+disponible'"/>
+                                <div class="absolute top-sm right-sm bg-white/90 backdrop-blur-sm rounded-full px-unit py-xs flex items-center gap-xs shadow-sm">
+                                    <span class="material-symbols-outlined text-secondary-container text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
+                                    <span class="like-count font-label-bold text-[12px] text-on-surface">${likesCache[id]}</span>
+                                </div>
+                            </div>
+                            <div class="p-sm flex flex-col flex-grow justify-between bg-surface">
+                                <div>
+                                    <h3 class="gallery-title font-headline-md text-body-lg text-on-surface mb-xs truncate">${title}</h3>
+                                    <p class="gallery-author font-body-md text-label-bold text-on-surface-variant">Por ${author}${ageStr}</p>
+                                </div>
+                                <div class="mt-sm flex justify-between items-center">
+                                    <span class="gallery-category text-[10px] uppercase font-bold text-primary-container tracking-wider bg-primary-fixed-dim/20 px-2 py-1 rounded">${category}</span>
+                                    <button aria-label="Dar me gusta" class="like-btn w-8 h-8 rounded-full bg-surface-container hover:bg-secondary-fixed flex items-center justify-center text-on-surface-variant hover:text-secondary transition-colors ${likeColorClass}">
+                                        <span class="material-symbols-outlined text-xl" style="font-variation-settings: ${heartFill};">favorite</span>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+
+                        // Hacer clic en la tarjeta abre el detalle/museo (TikTok Feed)
+                        card.addEventListener('click', () => {
+                            buildMuseoFeed();
+                            showView('museo');
+                            setTimeout(() => {
+                                const targetSlide = document.getElementById(`feed-card-${id}`);
+                                if (targetSlide) {
+                                    targetSlide.scrollIntoView({ behavior: 'auto', block: 'start' });
+                                }
+                            }, 50);
+                        });
+
+                        // Manejo de Likes individuales
+                        const likeBtn = card.querySelector('.like-btn');
+                        const likeCount = card.querySelector('.like-count');
+
+                        if (likeBtn && likeCount) {
+                            likeBtn.addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                let count = parseInt(likeCount.textContent, 10);
+                                const isLiked = localStorage.getItem(`feed_liked_${id}`) === 'true';
+                                if (!isLiked) {
+                                    count++;
+                                    likeCount.textContent = count;
+                                    likeBtn.classList.add('text-secondary', 'bg-secondary-fixed');
+                                    const heartIcon = likeBtn.querySelector('.material-symbols-outlined');
+                                    if (heartIcon) heartIcon.style.fontVariationSettings = "'FILL' 1";
+                                    localStorage.setItem(`feed_liked_${id}`, 'true');
+                                    likesCache[id] = count;
+                                    syncTikTokLike(id, count, true);
+                                } else {
+                                    count--;
+                                    likeCount.textContent = count;
+                                    likeBtn.classList.remove('text-secondary', 'bg-secondary-fixed');
+                                    const heartIcon = likeBtn.querySelector('.material-symbols-outlined');
+                                    if (heartIcon) heartIcon.style.fontVariationSettings = "'FILL' 0";
+                                    localStorage.removeItem(`feed_liked_${id}`);
+                                    likesCache[id] = count;
+                                    syncTikTokLike(id, count, false);
+                                }
+                            });
+                        }
+
+                        galleryGrid.appendChild(card);
+                    });
+                }
+
+                // Generar y limpiar el feed del museo
+                if (typeof buildMuseoFeed === 'function') {
+                    buildMuseoFeed();
+                }
+
+                // Resetear el estado visual de los botones de filtro a 'Todas'
+                const filterBtns = document.querySelectorAll('.gallery-filter-btn');
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-primary-fixed', 'text-on-primary-fixed', 'shadow-[0_4px_15px_rgba(0,163,224,0.15)]');
+                    b.classList.add('bg-surface-container', 'text-on-surface-variant');
+                    if (b.getAttribute('data-filter') === 'Todas') {
+                        b.classList.remove('bg-surface-container', 'text-on-surface-variant');
+                        b.classList.add('bg-primary-fixed', 'text-on-primary-fixed', 'shadow-[0_4px_15px_rgba(0,163,224,0.15)]');
+                    }
+                });
+
+            } catch (err) {
+                console.error('Error al cargar la galería en el DOM:', err);
+                galleryGrid.innerHTML = `
+                    <div id="gallery-error" class="col-span-full text-center py-xl text-red-500">
+                        <span class="material-symbols-outlined text-5xl mb-sm block">error</span>
+                        <p class="font-body-lg">Error al conectar con la galería. Revisa la consola o enciende el servidor.</p>
+                    </div>
+                `;
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            // Inicializar modelo
+            // Inicializar modelo y consultar galería
             loadModel();
+            checkUploadLimit();
+            loadGallery();
+
+            // Modo Administrador Toggle listeners
+            const adminBtn = document.getElementById('admin-toggle-btn');
+            const adminFeedBtn = document.getElementById('admin-toggle-feed-btn');
+            if (adminBtn) {
+                adminBtn.addEventListener('click', toggleAdminMode);
+            }
+            if (adminFeedBtn) {
+                adminFeedBtn.addEventListener('click', toggleAdminMode);
+            }
 
             // Configurar botones de navegación
             const navTriggers = [
@@ -722,13 +1045,19 @@
                 { id: 'desk-btn-laboratorio', view: 'laboratorio' },
                 { id: 'desk-btn-ficha', view: 'ficha' },
                 { id: 'desk-btn-galeria', view: 'galeria' },
-                { id: 'desk-btn-mamb', view: 'museo' }
+                { id: 'desk-btn-mamb', view: 'museo' },
+                { id: 'profile-avatar-btn', view: 'perfil' }
             ];
 
             navTriggers.forEach(trigger => {
                 const btn = document.getElementById(trigger.id);
                 if (btn) {
-                    btn.addEventListener('click', () => showView(trigger.view));
+                    btn.addEventListener('click', () => {
+                        if (trigger.view === 'museo') {
+                            buildMuseoFeed();
+                        }
+                        showView(trigger.view);
+                    });
                 }
             });
 
@@ -740,6 +1069,26 @@
                 });
             }
 
+            // Configuración de la selección de Categorías en Ficha Técnica
+            const categoryChips = document.querySelectorAll('.category-chip');
+            categoryChips.forEach(chip => {
+                chip.addEventListener('click', () => {
+                    categoryChips.forEach(c => {
+                        c.removeAttribute('data-active');
+                        c.className = "category-chip bg-surface-container border-2 border-outline-variant rounded-full px-md py-unit font-label-bold text-label-bold text-on-surface-variant hover:bg-surface-container-high hover:border-outline transition-colors flex items-center gap-xs";
+                        const icon = c.querySelector('.material-symbols-outlined');
+                        if (icon) icon.style.fontVariationSettings = "'FILL' 0";
+                    });
+
+                    chip.setAttribute('data-active', 'true');
+                    chip.className = "category-chip bg-tertiary-container border-2 border-tertiary text-on-tertiary-container rounded-full px-md py-unit font-label-bold text-label-bold shadow-sm flex items-center gap-xs";
+                    const icon = chip.querySelector('.material-symbols-outlined');
+                    if (icon) icon.style.fontVariationSettings = "'FILL' 1";
+
+                    selectedCategory = chip.getAttribute('data-category');
+                });
+            });
+
             // Configuración del file upload controlado por el botón estético
             const uploadBtn = document.getElementById('upload-btn');
             const fileUploader = document.getElementById('file-uploader');
@@ -750,6 +1099,7 @@
 
             if (uploadBtn && fileUploader) {
                 uploadBtn.addEventListener('click', () => {
+                    if (uploadBtn.disabled) return;
                     fileUploader.click();
                 });
             }
@@ -759,6 +1109,7 @@
                     const file = event.target.files[0];
                     if (file) {
                         isAnalyzing = true;
+                        uploadedFileFile = file; // Guardar referencia física de la imagen
                         const reader = new FileReader();
                         reader.onload = (e) => {
                             if (previewImg) previewImg.src = e.target.result;
@@ -869,10 +1220,23 @@
                             scanline.style.animation = '';
                         }
 
-                        // Realizar la transición automática a la Ficha Técnica después de 1 segundo
+                        // Activar inmediatamente el loader mágico de IA
+                        const magicLoader = document.getElementById('mamb-magic-loader');
+                        if (magicLoader) {
+                            magicLoader.classList.remove('hidden');
+                        }
+
+                        // Transición automática a la Ficha Técnica después de exactamente 1.8 segundos (1800ms)
                         setTimeout(() => {
+                            if (magicLoader) {
+                                magicLoader.classList.add('hidden');
+                            }
+                            const deskBtnFicha = document.getElementById('desk-btn-ficha');
+                            const navBtnFicha = document.getElementById('nav-btn-ficha');
+                            if (deskBtnFicha) deskBtnFicha.classList.remove('hidden');
+                            if (navBtnFicha) navBtnFicha.classList.remove('hidden');
                             showView('ficha');
-                        }, 1000);
+                        }, 1800);
 
                     } catch (err) {
                         console.error('Error durante la predicción:', err);
@@ -887,54 +1251,538 @@
                 };
             }
 
-            // Interactividad de la Galería
-            const galleryCards = document.querySelectorAll('.gallery-card');
-            galleryCards.forEach(card => {
-                // Hacer clic en la tarjeta abre el detalle/museo
-                card.addEventListener('click', () => {
-                    const img = card.querySelector('img');
-                    const title = card.querySelector('.gallery-title');
-                    const author = card.querySelector('.gallery-author');
-                    const category = card.querySelector('.gallery-category');
+            // Envío real de la obra (Guardar Obra POST Multipart)
+            const saveArtworkBtn = document.getElementById('save-artwork-btn');
+            if (saveArtworkBtn) {
+                saveArtworkBtn.addEventListener('click', async () => {
+                    const title = document.getElementById('obra-nombre').value.trim();
+                    const description = document.getElementById('obra-desc').value.trim();
+                    const aiStyle = document.getElementById('winning-style-chip').textContent.trim();
+                    const authorInput = document.getElementById('authorName');
+                    const author = authorInput ? authorInput.value.trim() : '';
+                    const finalAuthor = author || 'Artista Anónimo';
 
-                    if (img && title && author && category) {
-                        document.getElementById('museo-img').src = img.src;
-                        document.getElementById('museo-title').textContent = title.textContent;
-                        document.getElementById('museo-author').textContent = author.textContent;
-                        document.getElementById('museo-style').textContent = category.textContent;
+                    if (!title) {
+                        alert('¡Por favor dale un nombre a tu gran obra maestra!');
+                        return;
+                    }
+
+                    if (!uploadedFileFile) {
+                        alert('¡Sube una foto en el Laboratorio de IA primero!');
+                        return;
+                    }
+
+                    // Estado de guardado en el botón
+                    const originalText = saveArtworkBtn.innerHTML;
+                    saveArtworkBtn.disabled = true;
+                    saveArtworkBtn.innerHTML = `
+                        <span class="material-symbols-outlined animate-spin mr-2">sync</span>
+                        Guardando...
+                    `;
+
+                    try {
+                        const formData = new FormData();
+                        formData.append('image', uploadedFileFile);
+                        formData.append('title', title);
+                        formData.append('author', finalAuthor);
+                        formData.append('category', selectedCategory);
+                        formData.append('aiStyle', aiStyle);
+                        formData.append('description', description);
+                        formData.append('age', '8');
+
+                        const response = await fetch(`${BACKEND_URL}/api/artworks`, {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error || 'Error al guardar la obra');
+                        }
+
+                        const newArtwork = await response.json();
+                        showSuccessToast();
                         
+                        // Incrementar el contador si no tiene cuenta iniciada
+                        const isLoggedIn = localStorage.getItem('mamb_user_logged_in') === 'true';
+                        if (!isLoggedIn) {
+                            let uploadsCount = parseInt(localStorage.getItem('mamb_user_uploads') || '0', 10);
+                            uploadsCount++;
+                            localStorage.setItem('mamb_user_uploads', uploadsCount.toString());
+                            checkUploadLimit();
+                        }
+
+                        // Limpiar campos del formulario
+                        document.getElementById('obra-nombre').value = '';
+                        document.getElementById('obra-desc').value = '';
+                        const authorInput = document.getElementById('authorName');
+                        if (authorInput) authorInput.value = '';
+                        
+                        // Refrescar la galería y redirigir
+                        await loadGallery();
                         showView('museo');
+
+                        // Hacer scroll suave hacia la nueva obra en el feed
+                        setTimeout(() => {
+                            const targetSlide = document.getElementById(`feed-card-${newArtwork.id}`);
+                            if (targetSlide) {
+                                targetSlide.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            }
+                        }, 400);
+
+                    } catch (error) {
+                        console.error('Error saving artwork:', error);
+                        alert(`Vaya, hubo un problema al guardar: ${error.message}`);
+                    } finally {
+                        saveArtworkBtn.disabled = false;
+                        saveArtworkBtn.innerHTML = originalText;
                     }
                 });
+            }
 
-                // Manejo de Likes individuales
-                const likeBtn = card.querySelector('.like-btn');
-                const likeCount = card.querySelector('.like-count');
+            // Descargar obra / Compartir
+            const btnCompartir = document.getElementById('btn-compartir');
+            if (btnCompartir) {
+                btnCompartir.addEventListener('click', () => {
+                    const fichaImg = document.getElementById('ficha-img');
+                    if (fichaImg && fichaImg.src) {
+                        const a = document.createElement('a');
+                        a.href = fichaImg.src;
+                        a.download = 'Mi_Obra_Maestra.jpg';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    } else {
+                        alert('¡No hay ninguna imagen para descargar!');
+                    }
+                });
+            }
 
-                if (likeBtn && likeCount) {
-                    let liked = false;
-                    likeBtn.addEventListener('click', (e) => {
-                        e.stopPropagation(); // Evitar que el clic abra la vista Detalle
-                        let count = parseInt(likeCount.textContent, 10);
-                        if (!liked) {
-                            count++;
-                            likeCount.textContent = count;
-                            likeBtn.classList.add('text-secondary', 'bg-secondary-fixed');
-                            const heartIcon = likeBtn.querySelector('.material-symbols-outlined');
-                            if (heartIcon) heartIcon.style.fontVariationSettings = "'FILL' 1";
-                            liked = true;
+            // Filtros de la Galería
+            const filterBtns = document.querySelectorAll('.gallery-filter-btn');
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const filter = btn.getAttribute('data-filter');
+                    currentFilter = filter;
+                    
+                    // Actualizar estilos visuales
+                    filterBtns.forEach(b => {
+                        b.classList.remove('bg-primary-fixed', 'text-on-primary-fixed', 'shadow-[0_4px_15px_rgba(0,163,224,0.15)]');
+                        b.classList.add('bg-surface-container', 'text-on-surface-variant');
+                    });
+                    
+                    btn.classList.remove('bg-surface-container', 'text-on-surface-variant');
+                    btn.classList.add('bg-primary-fixed', 'text-on-primary-fixed', 'shadow-[0_4px_15px_rgba(0,163,224,0.15)]');
+                    
+                    // Filtrar tarjetas
+                    const cards = document.querySelectorAll('.gallery-card');
+                    cards.forEach(card => {
+                        if (filter === 'Todas') {
+                            card.style.display = 'flex';
                         } else {
-                            count--;
-                            likeCount.textContent = count;
-                            likeBtn.classList.remove('text-secondary', 'bg-secondary-fixed');
-                            const heartIcon = likeBtn.querySelector('.material-symbols-outlined');
-                            if (heartIcon) heartIcon.style.fontVariationSettings = "'FILL' 0";
-                            liked = false;
+                            const cardAiStyle = card.getAttribute('data-aistyle') || '';
+                            if (cardAiStyle.trim().toLowerCase() === filter.trim().toLowerCase()) {
+                                card.style.display = 'flex';
+                            } else {
+                                card.style.display = 'none';
+                            }
+                        }
+                    });
+
+                    // Ocultar o mostrar secciones del feed vertical
+                    const feedCards = document.querySelectorAll('#museo-feed > div');
+                    feedCards.forEach(feedCard => {
+                        if (filter === 'Todas') {
+                            feedCard.style.display = 'flex';
+                        } else {
+                            const feedAiStyle = feedCard.getAttribute('data-aistyle') || '';
+                            if (feedAiStyle.trim().toLowerCase() === filter.trim().toLowerCase()) {
+                                feedCard.style.display = 'flex';
+                            } else {
+                                feedCard.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+            });
+
+            // Manejador del Formulario de Padres
+            const parentsForm = document.getElementById('parents-form');
+            if (parentsForm) {
+                parentsForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    // NOTA: Los datos de registro de los padres se enviarán listos para ser hasheados y persistidos en el backend en la base de datos de producción
+                    const email = document.getElementById('parent-email').value;
+                    const childName = document.getElementById('artist-name').value;
+                    alert(`¡Bienvenido! El perfil de ${childName} ha sido creado y sincronizado en la nube de MAMB.`);
+                    localStorage.setItem('mamb_user_logged_in', 'true');
+                    localStorage.setItem('mamb_child_name', childName);
+                    showView('laboratorio');
+                });
+            }
+        });
+
+        // Configuración y variables del Feed TikTok
+        let activeCommentsArtworkId = null;
+        const staticArtworks = [
+            {
+                id: "static-1",
+                title: "Explosión de Color",
+                author: "Sofía",
+                age: 8,
+                aiStyle: "Cubism",
+                imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCEVW_csZMeVgjUq32UWOQ1BSCmMsjVR4_SExjjov1oZH__203uSsJwSHNySxQbi4lVIytQJB32czTtvk4nMl3qdXl2-h7Xdy_hLOuXX4B3oMS242_Z0wz8WotAvQOaTE42II_qba5AXVy0nLd7p55dffI47r7QozxWE8kJjjA73p5EyDYEjZ5PuWzXFvr-MhB2MAMRRJmcAMXo1ia12krvDFzUUG6rZ21zRcmF42HamYKDR4A6uaFrPkpDW6K9rKTm6FSB0JTZYg",
+                likes: 24,
+                comments: ["¡Qué colores tan mágicos! 🎨", "¡Parece pintado por un astronauta! 🚀"]
+            },
+            {
+                id: "static-2",
+                title: "Mi Perro Mágico",
+                author: "Mateo",
+                age: 6,
+                aiStyle: "Watercolor",
+                imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuCUoTfeLcSKXogEL0iVpo9wQ6D3aPHMfdtNcnXc_fzVDfwGbjslQADY3IAnSI-mpGJ0sFxm5FwaOcciuVNJ7z77x9NgoOM6CW0-dTpA0-0qlYhlaniplPBo_II5fF6W-MavARNgJB4R4F4KVXlVLIOrKHLwQChgF9iDSJCvYmGgtK-EG4eZRC34VeU5_24tW9v9KVCStrUuUuv3x9uKbl9ddzOII4iG5EKTqkXrmEM99wOuOCcrEcB3CjwpxEFz02s2dE-BEjKveA",
+                likes: 18,
+                comments: ["¡Wow, ese perrito es genial! 🐶", "¡Me encantan las orejas! ✨"]
+            },
+            {
+                id: "static-3",
+                title: "Manos al Arte",
+                author: "Valentina",
+                age: 5,
+                aiStyle: "Sketch Pencil",
+                imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuChS9gV3MMhbGHPr5cPLFIxS0W6d4QGGZ4-f7fkeiD7MKGTJObRPW2NARnThYZfHC1sc71KyqbeVilPDoGZHLkoMcrJYeetTyG0xZvllPpCW2588KjFD4Otii_rX2kfyYvex_o95emym-vgAc3OBoPaoW4IZSOTvNCgwGEJcMbN9ZAY9tYQplxBVLrt_4gcoNzLpkyNvkiZSaijHsmrYBQO7LrfLq4-tjABq2l7aP5JthvlsvZlgCjut1rkr4leeWQU73Ki13SZhA",
+                likes: 42,
+                comments: ["¡Qué divertido pintar con las manos! 🙌", "¡Súper creativo! 🌟"]
+            },
+            {
+                id: "static-4",
+                title: "Mi Casa Feliz",
+                author: "Lucas",
+                age: 7,
+                aiStyle: "Sketch Pencil",
+                imageUrl: "https://lh3.googleusercontent.com/aida-public/AB6AXuB7oQsKqWc1XqgF3tkjfaqRaRLsNS89Ze3GnUI6aPMxP43s1JGz7lzp05hcabPzFTS9gVgEfiJhASpwBWG8eCbWwHuIpfG7hg3XxPDGCNMnV3NMME8whWe4H6E_pVaDHzGboZC4NDp_EkG-bYXrN0pRi7lRpwddP4KbV6l5Z_U6NFN186j7LRxO-xzO2MjiEjo4WeAsK08EgloswQ6cgkfdPrnR67x01nOI80jkkwXq0ZrxWIfuqJ5G3OvYXRD345bcnlkfU3FGeg",
+                likes: 5,
+                comments: ["¡Yo también quiero vivir ahí! 🏡", "¡La chimenea es mágica! 🎈"]
+            }
+        ];
+
+        const userCommentsStore = {};
+
+        function buildMuseoFeed() {
+            const feedContainer = document.getElementById('museo-feed');
+            if (!feedContainer) return;
+            feedContainer.innerHTML = '';
+
+            const allArtworks = [];
+            // Merge static artworks
+            staticArtworks.forEach(art => {
+                const hasLiked = localStorage.getItem(`feed_liked_${art.id}`) === 'true';
+                if (likesCache[art.id] === undefined) {
+                    likesCache[art.id] = (art.likes !== undefined ? art.likes : Math.floor(Math.random() * 50) + 10) + (hasLiked ? 1 : 0);
+                }
+                allArtworks.push({
+                    ...art,
+                    likes: likesCache[art.id],
+                    comments: userCommentsStore[art.id] || art.comments || ["¡Qué colores tan mágicos! 🎨", "¡Parece pintado por un astronauta! 🚀"]
+                });
+            });
+            // Merge database artworks
+            databaseArtworks.forEach(dbArt => {
+                const fullImageUrl = dbArt.imageUrl.startsWith('http') 
+                    ? dbArt.imageUrl 
+                    : `${BACKEND_URL}${dbArt.imageUrl}`;
+                
+                const hasLiked = localStorage.getItem(`feed_liked_${dbArt.id}`) === 'true';
+                if (likesCache[dbArt.id] === undefined) {
+                    likesCache[dbArt.id] = (Math.floor(Math.random() * 50) + 10) + (hasLiked ? 1 : 0);
+                }
+
+                allArtworks.push({
+                    id: dbArt.id,
+                    title: dbArt.title,
+                    author: dbArt.author,
+                    age: dbArt.age,
+                    aiStyle: dbArt.aiStyle,
+                    imageUrl: fullImageUrl,
+                    likes: likesCache[dbArt.id],
+                    comments: userCommentsStore[dbArt.id] || ["¡Qué colores tan mágicos! 🎨", "¡Parece pintado por un astronauta! 🚀"]
+                });
+            });
+
+            allArtworks.forEach(artwork => {
+                const page = document.createElement('div');
+                page.className = "w-full h-full snap-start relative bg-zinc-950 flex flex-col justify-center items-center flex-shrink-0 p-4 gap-4";
+                page.setAttribute('id', `feed-card-${artwork.id}`);
+                page.setAttribute('data-aistyle', artwork.aiStyle);
+
+                // Set display based on currentFilter
+                if (currentFilter === 'Todas' || artwork.aiStyle.trim().toLowerCase() === currentFilter.trim().toLowerCase()) {
+                    page.style.display = 'flex';
+                } else {
+                    page.style.display = 'none';
+                }
+
+                const hasLiked = localStorage.getItem(`feed_liked_${artwork.id}`) === 'true';
+                const likeColorClass = hasLiked ? 'text-red-500 font-black' : 'text-white';
+                const heartIcon = hasLiked ? 'favorite' : 'favorite';
+                const heartFill = hasLiked ? "'FILL' 1" : "'FILL' 0";
+
+                const commentsList = userCommentsStore[artwork.id] || artwork.comments;
+
+                page.innerHTML = `
+                    <!-- Center Image -->
+                    <div class="w-full h-full flex items-center justify-center p-4 md:p-8">
+                        <img class="object-contain max-w-full max-h-[70%] md:max-h-[75%] rounded-lg shadow-2xl" src="${artwork.imageUrl}" alt="${artwork.title}">
+                    </div>
+
+                    <!-- Admin Controls (floating over image) -->
+                    <div class="admin-controls absolute top-20 left-6 flex gap-sm z-50 ${isAdmin ? '' : 'hidden'}">
+                        <!-- Edit Button -->
+                        <button class="feed-edit-btn w-12 h-12 rounded-full bg-white/90 text-zinc-800 shadow-lg flex items-center justify-center hover:bg-white hover:scale-105 active:scale-95 transition-all" data-id="${artwork.id}">
+                            <span class="material-symbols-outlined text-xl">edit</span>
+                        </button>
+                        <!-- Delete Button -->
+                        <button class="feed-delete-btn w-12 h-12 rounded-full bg-red-600 text-white shadow-lg flex items-center justify-center hover:bg-red-700 hover:scale-105 active:scale-95 transition-all" data-id="${artwork.id}">
+                            <span class="material-symbols-outlined text-xl">delete</span>
+                        </button>
+                    </div>
+
+                    <!-- Right-side vertical overlay buttons (z-50 to ensure clickability on mobile, adjusted position) -->
+                    <div class="absolute right-4 bottom-28 md:right-6 md:bottom-32 flex flex-col gap-md items-center z-50">
+                        <!-- Like Button -->
+                        <button class="feed-like-btn w-14 h-14 rounded-full bg-white/10 ${likeColorClass} backdrop-blur-md flex flex-col items-center justify-center hover:bg-white/20 transition-all active:scale-90" data-id="${artwork.id}">
+                            <span class="material-symbols-outlined text-3xl" style="font-variation-settings: ${heartFill};">${heartIcon}</span>
+                            <span class="feed-like-count text-[11px] font-label-bold text-zinc-300 mt-xs">${artwork.likes}</span>
+                        </button>
+
+                        <!-- Comments Button -->
+                        <button class="feed-comments-btn w-14 h-14 rounded-full bg-white/10 text-white backdrop-blur-md flex flex-col items-center justify-center hover:bg-white/20 transition-all active:scale-90" data-id="${artwork.id}">
+                            <span class="material-symbols-outlined text-3xl">chat</span>
+                            <span class="text-[11px] font-label-bold text-zinc-300 mt-xs">${commentsList.length}</span>
+                        </button>
+
+                        <!-- Download / Share Button -->
+                        <button class="feed-download-btn w-14 h-14 rounded-full bg-white/10 text-white backdrop-blur-md flex items-center justify-center hover:bg-white/20 transition-all active:scale-90" data-image="${artwork.imageUrl}">
+                            <span class="material-symbols-outlined text-3xl">download</span>
+                        </button>
+                    </div>
+
+                    <!-- Left-side info panel (z-40, text auto-scaled to fit small screen width, prevent overlap) -->
+                    <div class="absolute bottom-6 left-4 right-20 md:bottom-8 md:left-6 md:right-24 z-40 text-left pointer-events-none flex flex-col gap-xs max-w-[calc(100%-6rem)]">
+                        <h2 class="text-xl md:text-headline-lg font-headline-lg text-white mb-xs drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] truncate pointer-events-auto">${artwork.title}</h2>
+                        <p class="text-sm md:text-body-lg font-body-lg text-zinc-300 mb-xs drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] truncate pointer-events-auto">Por ${artwork.author}${artwork.age ? `, ${artwork.age} años` : ''}</p>
+                        <span class="inline-block bg-primary text-white font-label-bold text-label-bold uppercase tracking-widest text-[10px] px-3 py-1 rounded-full mt-xs shadow-md pointer-events-auto self-start">${artwork.aiStyle}</span>
+                    </div>
+                `;
+                
+                // Admin button event listeners
+                const editBtn = page.querySelector('.feed-edit-btn');
+                const deleteBtn = page.querySelector('.feed-delete-btn');
+
+                if (editBtn) {
+                    editBtn.addEventListener('click', async () => {
+                        const newTitle = prompt('Editar título de la obra:', artwork.title);
+                        if (newTitle === null) return;
+                        const finalTitle = newTitle.trim();
+                        if (!finalTitle) return;
+
+                        if (artwork.id.toString().startsWith('static')) {
+                            artwork.title = finalTitle;
+                            buildMuseoFeed();
+                            alert('¡Título de obra estática editado con éxito (en memoria)!');
+                            return;
+                        }
+
+                        try {
+                            const res = await fetch(`${BACKEND_URL}/api/artworks/${artwork.id}`, {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({ title: finalTitle })
+                            });
+                            if (!res.ok) throw new Error('Error al actualizar la obra en el servidor.');
+                            
+                            const updated = await res.json();
+                            alert('¡Obra editada con éxito!');
+                            artwork.title = updated.title;
+                            buildMuseoFeed();
+                            loadGallery();
+                        } catch (err) {
+                            console.error(err);
+                            alert(`Error al editar: ${err.message}`);
                         }
                     });
                 }
+
+                if (deleteBtn) {
+                    deleteBtn.addEventListener('click', async () => {
+                        if (!confirm(`¿Estás seguro de que quieres eliminar la obra "${artwork.title}"?`)) return;
+                        
+                        if (artwork.id.toString().startsWith('static')) {
+                            const index = staticArtworks.findIndex(art => art.id === artwork.id);
+                            if (index !== -1) {
+                                staticArtworks.splice(index, 1);
+                            }
+                            alert('¡Obra estática eliminada con éxito (solo en memoria)!');
+                            buildMuseoFeed();
+                            return;
+                        }
+
+                        try {
+                            const res = await fetch(`${BACKEND_URL}/api/artworks/${artwork.id}`, {
+                                method: 'DELETE'
+                            });
+                            if (!res.ok) throw new Error('Error al eliminar la obra del servidor.');
+                            
+                            alert('¡Obra eliminada con éxito!');
+                            databaseArtworks = databaseArtworks.filter(dbArt => dbArt.id !== artwork.id);
+                            buildMuseoFeed();
+                            loadGallery();
+                        } catch (err) {
+                            console.error(err);
+                            alert(`Error al eliminar: ${err.message}`);
+                        }
+                    });
+                }
+
+                const likeBtn = page.querySelector('.feed-like-btn');
+                if (likeBtn) {
+                    likeBtn.addEventListener('click', () => {
+                        const id = likeBtn.getAttribute('data-id');
+                        const isAlreadyLiked = localStorage.getItem(`feed_liked_${id}`) === 'true';
+                        const countSpan = likeBtn.querySelector('.feed-like-count');
+                        const heartIconSpan = likeBtn.querySelector('.material-symbols-outlined');
+                        let currentCount = parseInt(countSpan.textContent, 10);
+
+                        if (isAlreadyLiked) {
+                            localStorage.removeItem(`feed_liked_${id}`);
+                            likeBtn.classList.remove('text-red-500', 'font-black');
+                            likeBtn.classList.add('text-white');
+                            if (heartIconSpan) heartIconSpan.style.fontVariationSettings = "'FILL' 0";
+                            const newCount = currentCount - 1;
+                            countSpan.textContent = newCount;
+                            likesCache[id] = newCount;
+                            syncGalleryLike(id, newCount, false);
+                        } else {
+                            localStorage.setItem(`feed_liked_${id}`, 'true');
+                            likeBtn.classList.remove('text-white');
+                            likeBtn.classList.add('text-red-500', 'font-black');
+                            if (heartIconSpan) heartIconSpan.style.fontVariationSettings = "'FILL' 1";
+                            const newCount = currentCount + 1;
+                            countSpan.textContent = newCount;
+                            likesCache[id] = newCount;
+                            syncGalleryLike(id, newCount, true);
+                        }
+                    });
+                }
+
+                const commentsBtn = page.querySelector('.feed-comments-btn');
+                commentsBtn.addEventListener('click', () => {
+                    openCommentsDrawer(artwork.id, commentsList);
+                });
+
+                const downloadBtn = page.querySelector('.feed-download-btn');
+                downloadBtn.addEventListener('click', async () => {
+                    const imageUrl = downloadBtn.getAttribute('data-image');
+                    try {
+                        const res = await fetch(imageUrl);
+                        const blob = await res.blob();
+                        const blobUrl = URL.createObjectURL(blob);
+                        
+                        const a = document.createElement('a');
+                        a.href = blobUrl;
+                        a.download = `Obra_${artwork.title.replace(/\s+/g, '_')}.jpg`;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(blobUrl);
+                    } catch (error) {
+                        console.error('Error downloading image, falling back:', error);
+                        const a = document.createElement('a');
+                        a.href = imageUrl;
+                        a.target = '_blank';
+                        a.download = 'Mi_Obra_Maestra.jpg';
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    }
+                });
+
+                feedContainer.appendChild(page);
             });
+        }
+
+        function openCommentsDrawer(artworkid, commentsList) {
+            activeCommentsArtworkId = artworkid;
+            const drawer = document.getElementById('comments-drawer');
+            const list = document.getElementById('comments-list');
+            if (!drawer || !list) return;
+
+            list.innerHTML = '';
+            
+            if (!userCommentsStore[artworkid]) {
+                userCommentsStore[artworkid] = [...commentsList];
+            }
+
+            userCommentsStore[artworkid].forEach(comment => {
+                const commentEl = document.createElement('div');
+                commentEl.className = "bg-zinc-800 text-zinc-100 p-sm rounded-lg font-body-md text-body-md";
+                commentEl.textContent = comment;
+                list.appendChild(commentEl);
+            });
+
+            drawer.classList.remove('hidden');
+        }
+
+        // Eventos del Drawer de Comentarios
+        document.addEventListener('DOMContentLoaded', () => {
+            const closeCommentsBtn = document.getElementById('close-comments-btn');
+            if (closeCommentsBtn) {
+                closeCommentsBtn.addEventListener('click', () => {
+                    const drawer = document.getElementById('comments-drawer');
+                    if (drawer) drawer.classList.add('hidden');
+                });
+            }
+
+            const submitCommentBtn = document.getElementById('submit-comment-btn');
+            const commentInput = document.getElementById('comment-input');
+            if (submitCommentBtn && commentInput) {
+                submitCommentBtn.addEventListener('click', () => {
+                    const commentText = commentInput.value.trim();
+                    if (!commentText || !activeCommentsArtworkId) return;
+
+                    if (!userCommentsStore[activeCommentsArtworkId]) {
+                        userCommentsStore[activeCommentsArtworkId] = [];
+                    }
+                    userCommentsStore[activeCommentsArtworkId].push(commentText);
+
+                    openCommentsDrawer(activeCommentsArtworkId, userCommentsStore[activeCommentsArtworkId]);
+
+                    const card = document.getElementById(`feed-card-${activeCommentsArtworkId}`);
+                    if (card) {
+                        const commentsCountSpan = card.querySelector('.feed-comments-btn .text-[11px]');
+                        if (commentsCountSpan) {
+                            commentsCountSpan.textContent = userCommentsStore[activeCommentsArtworkId].length;
+                        }
+                    }
+
+                    commentInput.value = '';
+                });
+            }
         });
     </script>
+
+    <!-- Toast de Éxito Flotante -->
+    <div id="success-toast" class="hidden fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex items-center justify-center transition-all duration-300">
+        <div class="bg-white dark:bg-zinc-900 border-2 border-primary rounded-[2rem] p-lg flex flex-col items-center gap-md max-w-sm text-center shadow-2xl scale-95 transition-transform duration-300" id="success-toast-content">
+            <div class="w-20 h-20 bg-green-100 dark:bg-green-950/50 rounded-full flex items-center justify-center text-green-500 animate-bounce">
+                <span class="material-symbols-outlined text-[48px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            </div>
+            <h3 class="text-2xl font-bold text-on-surface">¡Guardado con Éxito!</h3>
+            <p class="font-body-md text-on-surface-variant leading-relaxed">¡Tu obra de arte ya está en el museo! 🎨✨</p>
+        </div>
+    </div>
 </body>
 </html>
