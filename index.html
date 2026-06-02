@@ -155,7 +155,7 @@
         </button>
         <h1 class="font-['Plus_Jakarta_Sans'] font-extrabold tracking-tight text-lg md:text-xl font-black text-sky-600 dark:text-sky-400 text-center flex-1 mx-4 truncate">Mi Obra Maestra</h1>
         <div class="flex items-center gap-sm">
-            <button id="admin-toggle-btn" class="text-zinc-400 hover:text-primary transition-colors flex items-center justify-center p-2 rounded-full" title="Modo Administrador">
+            <button id="admin-toggle-btn" class="text-zinc-400 hover:text-primary transition-colors flex items-center justify-center p-2 rounded-full" title="Modo Editor">
                 <span class="material-symbols-outlined text-2xl">settings</span>
             </button>
             <button id="profile-avatar-btn" class="text-sky-500 dark:text-sky-400 hover:scale-105 transition-transform duration-200 active:scale-95 flex items-center justify-center p-2 rounded-full overflow-hidden w-10 h-10 bg-surface-variant border-2 border-primary-container">
@@ -170,7 +170,9 @@
             <button id="desk-btn-laboratorio" class="px-4 py-2 rounded-full font-label-bold text-label-bold transition-all duration-300 bg-primary-container text-on-primary-container shadow-sm">Laboratorio</button>
             <button id="desk-btn-ficha" class="hidden px-4 py-2 rounded-full font-label-bold text-label-bold transition-all duration-300 text-on-surface-variant hover:bg-surface-container">Ficha Técnica</button>
             <button id="desk-btn-galeria" class="px-4 py-2 rounded-full font-label-bold text-label-bold transition-all duration-300 text-on-surface-variant hover:bg-surface-container">Galería</button>
-            <button id="desk-btn-mamb" class="px-4 py-2 rounded-full font-label-bold text-label-bold transition-all duration-300 text-on-surface-variant hover:bg-surface-container">MAMB</button>
+            <button id="desk-btn-mamb" class="px-4 py-2 rounded-full font-bold transition-all duration-300 bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md hover:scale-110 active:scale-95 animate-pulse pointer-events-auto flex items-center gap-xs">
+                <span class="material-symbols-outlined text-sm text-white">museum</span> MAMB 🚀
+            </button>
         </div>
     </nav>
 
@@ -545,7 +547,7 @@
                 <span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">arrow_back</span>
             </button>
             <h1 class="font-headline-md text-headline-md text-white font-bold tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">MAMB Feed</h1>
-            <button id="admin-toggle-feed-btn" class="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors pointer-events-auto" title="Modo Administrador">
+            <button id="admin-toggle-feed-btn" class="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors pointer-events-auto" title="Modo Editor">
                 <span class="material-symbols-outlined text-white">settings</span>
             </button>
         </nav>
@@ -640,9 +642,9 @@
                 <span class="material-symbols-outlined text-2xl mb-1">auto_awesome_motion</span>
                 <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">Galería</span>
             </button>
-            <button id="nav-btn-mamb" class="flex flex-col items-center justify-center text-gray-400 dark:text-gray-500 px-6 py-2 transition-all duration-300 active:scale-125">
-                <span class="material-symbols-outlined text-2xl mb-1">museum</span>
-                <span class="font-['Plus_Jakarta_Sans'] text-[10px] font-bold uppercase tracking-widest">MAMB</span>
+            <button id="nav-btn-mamb" class="flex flex-col items-center justify-center bg-gradient-to-r from-orange-500 to-amber-500 text-white rounded-full px-5 py-2 transition-all duration-300 active:scale-125 animate-pulse shadow-md">
+                <span class="material-symbols-outlined text-2xl mb-0.5 text-white">museum</span>
+                <span class="font-['Plus_Jakarta_Sans'] text-[9px] font-extrabold uppercase tracking-widest text-white">MAMB 🚀</span>
             </button>
         </div>
     </nav>
@@ -657,35 +659,75 @@
         let databaseArtworks = [];
         let currentFilter = 'Todas';
         const likesCache = {};
-        let isAdmin = false;
+        let isEditor = false;
 
-        function showSuccessToast() {
-            const toast = document.getElementById('success-toast');
-            const content = document.getElementById('success-toast-content');
-            if (!toast || !content) return;
-
+        // Custom Toasts / Notification System
+        let notificationTimeout = null;
+        function showNotification(message, type = 'success') {
+            const toast = document.getElementById('notification-toast');
+            const content = document.getElementById('notification-content');
+            const iconContainer = document.getElementById('notification-icon-container');
+            const icon = document.getElementById('notification-icon');
+            const text = document.getElementById('notification-text');
+            
+            if (!toast || !content || !iconContainer || !icon || !text) {
+                console.log(`[Notification] ${type}: ${message}`);
+                return;
+            }
+            
+            if (notificationTimeout) {
+                clearTimeout(notificationTimeout);
+            }
+            
+            // Setup type styles
+            content.className = "bg-white dark:bg-zinc-900 border-2 rounded-full px-6 py-3 flex items-center gap-sm shadow-2xl pointer-events-auto max-w-md transition-all duration-300";
+            iconContainer.className = "w-8 h-8 rounded-full flex items-center justify-center text-white animate-bounce flex-shrink-0";
+            
+            if (type === 'success') {
+                content.classList.add('border-green-400', 'dark:border-green-600');
+                iconContainer.classList.add('bg-green-500');
+                icon.textContent = 'check';
+                text.className = 'text-sm font-bold text-green-800 dark:text-green-200';
+            } else if (type === 'error') {
+                content.classList.add('border-red-400', 'dark:border-red-600');
+                iconContainer.classList.add('bg-red-500');
+                icon.textContent = 'close';
+                text.className = 'text-sm font-bold text-red-800 dark:text-red-200';
+            } else { // warning
+                content.classList.add('border-amber-400', 'dark:border-amber-600');
+                iconContainer.classList.add('bg-amber-500');
+                icon.textContent = 'warning';
+                text.className = 'text-sm font-bold text-amber-800 dark:text-amber-200';
+            }
+            
+            text.textContent = message;
+            
+            // Show toast
             toast.classList.remove('hidden');
-            setTimeout(() => {
-                content.classList.remove('scale-95');
-                content.classList.add('scale-100');
-            }, 10);
-
-            setTimeout(() => {
-                content.classList.remove('scale-100');
-                content.classList.add('scale-95');
+            toast.offsetHeight; // force reflow
+            toast.classList.remove('-translate-y-10', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+            
+            notificationTimeout = setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('-translate-y-10', 'opacity-0');
                 setTimeout(() => {
                     toast.classList.add('hidden');
                 }, 300);
-            }, 2000);
+            }, 3000);
         }
 
-        function toggleAdminMode() {
-            isAdmin = !isAdmin;
+        function showSuccessToast() {
+            showNotification('¡Tu obra de arte ya está en el museo! 🎨✨', 'success');
+        }
+
+        function toggleEditorMode() {
+            isEditor = !isEditor;
             
             // Visual indicators on settings gears
             const gears = document.querySelectorAll('#admin-toggle-btn span, #admin-toggle-feed-btn span');
             gears.forEach(gear => {
-                if (isAdmin) {
+                if (isEditor) {
                     gear.classList.add('text-primary');
                     gear.classList.add('animate-spin');
                     gear.style.animationDuration = '8s';
@@ -695,17 +737,198 @@
                 }
             });
 
-            // Toggle visibility of admin controls in feed
+            // Toggle visibility of editor controls in feed and gallery cards
             const adminControls = document.querySelectorAll('.admin-controls');
             adminControls.forEach(ctrl => {
-                if (isAdmin) {
+                if (isEditor) {
                     ctrl.classList.remove('hidden');
                 } else {
                     ctrl.classList.add('hidden');
                 }
             });
 
-            alert(isAdmin ? 'Modo Administrador activado 🛠️' : 'Modo Administrador desactivado 🎨');
+            // Update details modal editor buttons if open
+            const modalAdminControls = document.getElementById('modal-admin-controls');
+            if (modalAdminControls) {
+                const modal = document.getElementById('artwork-detail-modal');
+                if (modal && !modal.classList.contains('hidden')) {
+                    const titleText = document.getElementById('modal-artwork-title').textContent;
+                    const artwork = databaseArtworks.find(a => a.title === titleText) || staticArtworks.find(a => a.title === titleText);
+                    if (artwork) {
+                        const currentUserId = localStorage.getItem('userId') || '';
+                        const currentRole = localStorage.getItem('role') || localStorage.getItem('mamb_role') || '';
+                        const canModify = currentRole === 'ADMIN' || (artwork.userId && artwork.userId === currentUserId);
+                        if (canModify && isEditor) {
+                            modalAdminControls.classList.remove('hidden');
+                        } else {
+                            modalAdminControls.classList.add('hidden');
+                        }
+                    }
+                }
+            }
+
+            showNotification(isEditor ? 'Modo Editor activado 🛠️' : 'Modo Editor desactivado 🎨', 'success');
+        }
+
+        // Gallery Artwork Detail Modal controller
+        function openDetailModal(artwork) {
+            const modal = document.getElementById('artwork-detail-modal');
+            const modalContent = document.getElementById('artwork-detail-modal-content');
+            
+            const img = document.getElementById('modal-artwork-img');
+            const title = document.getElementById('modal-artwork-title');
+            const category = document.getElementById('modal-artwork-category');
+            const author = document.getElementById('modal-artwork-author');
+            const style = document.getElementById('modal-artwork-style');
+            const description = document.getElementById('modal-artwork-description');
+            
+            const viewFeedBtn = document.getElementById('modal-view-feed-btn');
+            const closeBtn = document.getElementById('modal-close-btn');
+            
+            const adminControls = document.getElementById('modal-admin-controls');
+            const editBtn = document.getElementById('modal-edit-btn');
+            const deleteBtn = document.getElementById('modal-delete-btn');
+
+            if (!modal || !modalContent) return;
+
+            const fullImageUrl = artwork.imageUrl.startsWith('http') 
+                ? artwork.imageUrl 
+                : `${BACKEND_URL}${artwork.imageUrl.startsWith('/') ? '' : '/'}${artwork.imageUrl}`;
+                
+            img.src = fullImageUrl;
+            img.alt = artwork.title || 'Obra';
+            title.textContent = artwork.title || 'Sin Título';
+            category.textContent = artwork.category || 'General';
+            
+            const ageStr = artwork.age ? `, ${artwork.age} años` : '';
+            author.textContent = `Por ${artwork.author || 'Anónimo'}${ageStr}`;
+            style.textContent = artwork.aiStyle || 'Normal';
+            
+            description.textContent = artwork.description || "¡Esta es una obra mágica creada con mucha imaginación y colores maravillosos! 🎨✨";
+
+            // Role and authorization controls for edit/delete in the modal
+            const currentUserId = localStorage.getItem('userId') || '';
+            const currentRole = localStorage.getItem('role') || localStorage.getItem('mamb_role') || '';
+            const canModify = currentRole === 'ADMIN' || (artwork.userId && artwork.userId === currentUserId);
+
+            if (canModify && isEditor) {
+                adminControls.classList.remove('hidden');
+            } else {
+                adminControls.classList.add('hidden');
+            }
+
+            if (canModify) {
+                const newEditBtn = editBtn.cloneNode(true);
+                const newDeleteBtn = deleteBtn.cloneNode(true);
+                
+                editBtn.parentNode.replaceChild(newEditBtn, editBtn);
+                deleteBtn.parentNode.replaceChild(newDeleteBtn, deleteBtn);
+                
+                newEditBtn.addEventListener('click', async () => {
+                    const newTitle = prompt('Editar título de la obra:', artwork.title);
+                    if (newTitle === null) return;
+                    const finalTitle = newTitle.trim();
+                    if (!finalTitle) return;
+
+                    if (artwork.id.toString().startsWith('static')) {
+                        artwork.title = finalTitle;
+                        title.textContent = finalTitle;
+                        buildMuseoFeed();
+                        loadGallery();
+                        showNotification('¡Título de obra estática editado con éxito (en memoria)!', 'success');
+                        return;
+                    }
+
+                    try {
+                        const headers = { 'Content-Type': 'application/json' };
+                        const token = localStorage.getItem('mamb_token');
+                        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                        const res = await fetch(`${BACKEND_URL}/api/artworks/${artwork.id}`, {
+                            method: 'PUT',
+                            headers: headers,
+                            body: JSON.stringify({ title: finalTitle })
+                        });
+                        if (!res.ok) throw new Error('Error al actualizar la obra en el servidor.');
+                        
+                        const updated = await res.json();
+                        showNotification('¡Obra editada con éxito!', 'success');
+                        artwork.title = updated.title;
+                        title.textContent = updated.title;
+                        buildMuseoFeed();
+                        loadGallery();
+                    } catch (err) {
+                        console.error(err);
+                        showNotification(`Error al editar: ${err.message}`, 'error');
+                    }
+                });
+
+                newDeleteBtn.addEventListener('click', async () => {
+                    if (!confirm(`¿Estás seguro de que quieres eliminar la obra "${artwork.title}"?`)) return;
+                    
+                    if (artwork.id.toString().startsWith('static')) {
+                        const index = staticArtworks.findIndex(art => art.id === artwork.id);
+                        if (index !== -1) staticArtworks.splice(index, 1);
+                        showNotification('¡Obra estática eliminada con éxito (solo en memoria)!', 'success');
+                        closeModal();
+                        buildMuseoFeed();
+                        loadGallery();
+                        return;
+                    }
+
+                    try {
+                        const headers = {};
+                        const token = localStorage.getItem('mamb_token');
+                        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                        const res = await fetch(`${BACKEND_URL}/api/artworks/${artwork.id}`, {
+                            method: 'DELETE',
+                            headers: headers
+                        });
+                        if (!res.ok) throw new Error('Error al eliminar la obra del servidor.');
+                        
+                        showNotification('¡Obra eliminada con éxito!', 'success');
+                        databaseArtworks = databaseArtworks.filter(dbArt => dbArt.id !== artwork.id);
+                        closeModal();
+                        buildMuseoFeed();
+                        loadGallery();
+                    } catch (err) {
+                        console.error(err);
+                        showNotification(`Error al eliminar: ${err.message}`, 'error');
+                    }
+                });
+            }
+
+            const closeModal = () => {
+                modalContent.classList.remove('scale-100', 'opacity-100');
+                modalContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            };
+            
+            closeBtn.onclick = closeModal;
+            modal.onclick = (e) => {
+                if (e.target === modal) closeModal();
+            };
+
+            viewFeedBtn.onclick = () => {
+                closeModal();
+                buildMuseoFeed();
+                showView('museo');
+                setTimeout(() => {
+                    const targetSlide = document.getElementById(`feed-card-${artwork.id}`);
+                    if (targetSlide) {
+                        targetSlide.scrollIntoView({ behavior: 'auto', block: 'start' });
+                    }
+                }, 50);
+            };
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modalContent.classList.remove('scale-95', 'opacity-0');
+                modalContent.classList.add('scale-100', 'opacity-100');
+            }, 10);
         }
 
         // Comprobación de límite de subidas gratis (máximo 3)
@@ -817,8 +1040,18 @@
                 const btn = mobileButtons[key];
                 if (!btn) continue;
                 
+                if (key === 'mamb') {
+                    const isActive = (activeView === 'museo');
+                    if (isActive) {
+                        btn.classList.add('ring-2', 'ring-orange-300', 'dark:ring-orange-800');
+                    } else {
+                        btn.classList.remove('ring-2', 'ring-orange-300', 'dark:ring-orange-800');
+                    }
+                    continue;
+                }
+
                 const icon = btn.querySelector('.material-symbols-outlined');
-                const isActive = (key === activeView) || (activeView === 'museo' && key === 'mamb');
+                const isActive = (key === activeView);
 
                 if (isActive) {
                     btn.classList.remove('text-gray-400', 'dark:text-gray-500');
@@ -836,7 +1069,17 @@
                 const btn = desktopButtons[key];
                 if (!btn) continue;
 
-                const isActive = (key === activeView) || (activeView === 'museo' && key === 'mamb');
+                if (key === 'mamb') {
+                    const isActive = (activeView === 'museo');
+                    if (isActive) {
+                        btn.classList.add('ring-4', 'ring-orange-300', 'dark:ring-orange-800');
+                    } else {
+                        btn.classList.remove('ring-4', 'ring-orange-300', 'dark:ring-orange-800');
+                    }
+                    continue;
+                }
+
+                const isActive = (key === activeView);
 
                 if (isActive) {
                     btn.classList.remove('text-on-surface-variant', 'hover:bg-surface-container');
@@ -945,9 +1188,25 @@
                         const likeColorClass = hasLiked ? 'text-secondary bg-secondary-fixed' : '';
                         const heartFill = hasLiked ? "'FILL' 1" : "'FILL' 0";
 
+                        const currentRole = localStorage.getItem('role') || localStorage.getItem('mamb_role') || '';
+                        const currentUserId = localStorage.getItem('userId') || '';
+                        const canModify = currentRole === 'ADMIN' || (artwork.userId && artwork.userId === currentUserId);
+
+                        const adminControlsHtml = canModify ? `
+                            <div class="admin-controls absolute top-2 left-2 flex gap-xs z-30 ${isEditor ? '' : 'hidden'}">
+                                <button class="gallery-edit-btn w-8 h-8 rounded-full bg-white/95 text-zinc-800 shadow-md flex items-center justify-center hover:bg-white hover:scale-105 active:scale-95 transition-all" data-id="${id}">
+                                    <span class="material-symbols-outlined text-sm">edit</span>
+                                </button>
+                                <button class="gallery-delete-btn w-8 h-8 rounded-full bg-red-600 text-white shadow-md flex items-center justify-center hover:bg-red-700 hover:scale-105 active:scale-95 transition-all" data-id="${id}">
+                                    <span class="material-symbols-outlined text-sm">delete</span>
+                                </button>
+                            </div>
+                        ` : '';
+
                         card.innerHTML = `
                             <div class="aspect-square w-full relative overflow-hidden bg-surface-container-low">
                                 <img alt="${title}" class="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500" src="${fullImageUrl}" onerror="this.src='https://via.placeholder.com/400x400?text=Obra+no+disponible'"/>
+                                ${adminControlsHtml}
                                 <div class="absolute top-sm right-sm bg-white/90 backdrop-blur-sm rounded-full px-unit py-xs flex items-center gap-xs shadow-sm">
                                     <span class="material-symbols-outlined text-secondary-container text-sm" style="font-variation-settings: 'FILL' 1;">favorite</span>
                                     <span class="like-count font-label-bold text-[12px] text-on-surface">${likesCache[id]}</span>
@@ -967,17 +1226,88 @@
                             </div>
                         `;
 
-                        // Hacer clic en la tarjeta abre el detalle/museo (TikTok Feed)
+                        // Hacer clic en la tarjeta abre el detalle/modal de la galería
                         card.addEventListener('click', () => {
-                            buildMuseoFeed();
-                            showView('museo');
-                            setTimeout(() => {
-                                const targetSlide = document.getElementById(`feed-card-${id}`);
-                                if (targetSlide) {
-                                    targetSlide.scrollIntoView({ behavior: 'auto', block: 'start' });
-                                }
-                            }, 50);
+                            openDetailModal(artwork);
                         });
+
+                        // Admin buttons inside gallery card event listeners
+                        const galleryEditBtn = card.querySelector('.gallery-edit-btn');
+                        const galleryDeleteBtn = card.querySelector('.gallery-delete-btn');
+
+                        if (galleryEditBtn) {
+                            galleryEditBtn.addEventListener('click', async (e) => {
+                                e.stopPropagation();
+                                const newTitle = prompt('Editar título de la obra:', title);
+                                if (newTitle === null) return;
+                                const finalTitle = newTitle.trim();
+                                if (!finalTitle) return;
+
+                                if (id.toString().startsWith('static')) {
+                                    artwork.title = finalTitle;
+                                    loadGallery();
+                                    buildMuseoFeed();
+                                    showNotification('¡Título de obra estática editado con éxito (en memoria)!', 'success');
+                                    return;
+                                }
+
+                                try {
+                                    const headers = { 'Content-Type': 'application/json' };
+                                    const token = localStorage.getItem('mamb_token');
+                                    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                                    const res = await fetch(`${BACKEND_URL}/api/artworks/${id}`, {
+                                        method: 'PUT',
+                                        headers: headers,
+                                        body: JSON.stringify({ title: finalTitle })
+                                    });
+                                    if (!res.ok) throw new Error('Error al actualizar la obra en el servidor.');
+                                    
+                                    showNotification('¡Obra editada con éxito!', 'success');
+                                    loadGallery();
+                                    buildMuseoFeed();
+                                } catch (err) {
+                                    console.error(err);
+                                    showNotification(`Error al editar: ${err.message}`, 'error');
+                                }
+                            });
+                        }
+
+                        if (galleryDeleteBtn) {
+                            galleryDeleteBtn.addEventListener('click', async (e) => {
+                                e.stopPropagation();
+                                if (!confirm(`¿Estás seguro de que quieres eliminar la obra "${title}"?`)) return;
+
+                                if (id.toString().startsWith('static')) {
+                                    const index = staticArtworks.findIndex(art => art.id === id);
+                                    if (index !== -1) staticArtworks.splice(index, 1);
+                                    showNotification('¡Obra estática eliminada con éxito (solo en memoria)!', 'success');
+                                    loadGallery();
+                                    buildMuseoFeed();
+                                    return;
+                                }
+
+                                try {
+                                    const headers = {};
+                                    const token = localStorage.getItem('mamb_token');
+                                    if (token) headers['Authorization'] = `Bearer ${token}`;
+
+                                    const res = await fetch(`${BACKEND_URL}/api/artworks/${id}`, {
+                                        method: 'DELETE',
+                                        headers: headers
+                                    });
+                                    if (!res.ok) throw new Error('Error al eliminar la obra del servidor.');
+                                    
+                                    showNotification('¡Obra eliminada con éxito!', 'success');
+                                    databaseArtworks = databaseArtworks.filter(dbArt => dbArt.id !== id);
+                                    loadGallery();
+                                    buildMuseoFeed();
+                                } catch (err) {
+                                    console.error(err);
+                                    showNotification(`Error al eliminar: ${err.message}`, 'error');
+                                }
+                            });
+                        }
 
                         // Manejo de Likes individuales
                         const likeBtn = card.querySelector('.like-btn');
@@ -1099,7 +1429,7 @@
             localStorage.removeItem('role');
             localStorage.setItem('mamb_user_logged_in', 'false');
             localStorage.removeItem('mamb_child_name');
-            alert('Has cerrado sesión.');
+            showNotification('Has cerrado sesión.', 'success');
             updateProfileUI();
             showView('laboratorio');
         }
@@ -1111,14 +1441,14 @@
             checkUploadLimit();
             loadGallery();
 
-            // Modo Administrador Toggle listeners
+            // Modo Editor Toggle listeners
             const adminBtn = document.getElementById('admin-toggle-btn');
             const adminFeedBtn = document.getElementById('admin-toggle-feed-btn');
             if (adminBtn) {
-                adminBtn.addEventListener('click', toggleAdminMode);
+                adminBtn.addEventListener('click', toggleEditorMode);
             }
             if (adminFeedBtn) {
-                adminFeedBtn.addEventListener('click', toggleAdminMode);
+                adminFeedBtn.addEventListener('click', toggleEditorMode);
             }
 
             const logoutBtn = document.getElementById('logout-btn');
@@ -1358,12 +1688,12 @@
                     const finalAuthor = author || 'Artista Anónimo';
 
                     if (!title) {
-                        alert('¡Por favor dale un nombre a tu gran obra maestra!');
+                        showNotification('¡Por favor dale un nombre a tu gran obra maestra!', 'warning');
                         return;
                     }
 
                     if (!uploadedFileFile) {
-                        alert('¡Sube una foto en el Laboratorio de IA primero!');
+                        showNotification('¡Sube una foto en el Laboratorio de IA primero!', 'warning');
                         return;
                     }
 
@@ -1439,7 +1769,7 @@
 
                     } catch (error) {
                         console.error('Error saving artwork:', error);
-                        alert(`Vaya, hubo un problema al guardar: ${error.message}`);
+                        showNotification(`Vaya, hubo un problema al guardar: ${error.message}`, 'error');
                     } finally {
                         saveArtworkBtn.disabled = false;
                         saveArtworkBtn.innerHTML = originalText;
@@ -1460,7 +1790,7 @@
                         a.click();
                         document.body.removeChild(a);
                     } else {
-                        alert('¡No hay ninguna imagen para descargar!');
+                        showNotification('¡No hay ninguna imagen para descargar!', 'warning');
                     }
                 });
             }
@@ -1472,7 +1802,7 @@
                     const filter = btn.getAttribute('data-filter');
                     
                     if (filter === 'Mis Obras' && localStorage.getItem('mamb_user_logged_in') !== 'true') {
-                        alert('¡Por favor inicia sesión en el Perfil de Padres para ver tus obras guardadas!');
+                        showNotification('¡Por favor inicia sesión en el Perfil de Padres para ver tus obras guardadas!', 'warning');
                         // Revertir el estado visual al botón de "Todas"
                         const todasBtn = document.querySelector('.gallery-filter-btn[data-filter="Todas"]');
                         if (todasBtn) todasBtn.click();
@@ -1549,7 +1879,7 @@
                     const childName = artistNameInput ? artistNameInput.value.trim() : '';
 
                     if (!isLoginMode && !childName) {
-                        alert('¡Por favor dinos el nombre del pequeño artista para crear su perfil! 🎨');
+                        showNotification('¡Por favor dinos el nombre del pequeño artista para crear su perfil! 🎨', 'warning');
                         return;
                     }
 
@@ -1593,7 +1923,7 @@
                             if (!regResponse.ok) {
                                 const errorData = await regResponse.json();
                                 // CRÍTICO: Alertar el error exacto del servidor y detener el flujo
-                                alert(errorData.error || 'Error en el registro');
+                                showNotification(errorData.error || 'Error en el registro', 'error');
                                 return;
                             }
 
@@ -1626,7 +1956,7 @@
                         localStorage.setItem('mamb_user_logged_in', 'true');
                         localStorage.setItem('mamb_child_name', name);
 
-                        alert(`¡Bienvenido! Sincronizado correctamente como ${name}.`);
+                        showNotification(`¡Bienvenido! Sincronizado correctamente como ${name}.`, 'success');
                         
                         // Limpiar formulario
                         document.getElementById('parent-email').value = '';
@@ -1644,7 +1974,7 @@
 
                         showView('laboratorio');
                     } catch (err) {
-                        alert(`Error al conectar: ${err.message}`);
+                        showNotification(`Error al conectar: ${err.message}`, 'error');
                     } finally {
                         if (submitBtn) {
                             submitBtn.disabled = false;
@@ -1841,7 +2171,7 @@
                         if (artwork.id.toString().startsWith('static')) {
                             artwork.title = finalTitle;
                             buildMuseoFeed();
-                            alert('¡Título de obra estática editado con éxito (en memoria)!');
+                            showNotification('¡Título de obra estática editado con éxito (en memoria)!', 'success');
                             return;
                         }
 
@@ -1862,13 +2192,13 @@
                             if (!res.ok) throw new Error('Error al actualizar la obra en el servidor.');
                             
                             const updated = await res.json();
-                            alert('¡Obra editada con éxito!');
+                            showNotification('¡Obra editada con éxito!', 'success');
                             artwork.title = updated.title;
                             buildMuseoFeed();
                             loadGallery();
                         } catch (err) {
                             console.error(err);
-                            alert(`Error al editar: ${err.message}`);
+                            showNotification(`Error al editar: ${err.message}`, 'error');
                         }
                     });
                 }
@@ -1882,7 +2212,7 @@
                             if (index !== -1) {
                                 staticArtworks.splice(index, 1);
                             }
-                            alert('¡Obra estática eliminada con éxito (solo en memoria)!');
+                            showNotification('¡Obra estática eliminada con éxito (solo en memoria)!', 'success');
                             buildMuseoFeed();
                             return;
                         }
@@ -1900,13 +2230,13 @@
                             });
                             if (!res.ok) throw new Error('Error al eliminar la obra del servidor.');
                             
-                            alert('¡Obra eliminada con éxito!');
+                            showNotification('¡Obra eliminada con éxito!', 'success');
                             databaseArtworks = databaseArtworks.filter(dbArt => dbArt.id !== artwork.id);
                             buildMuseoFeed();
                             loadGallery();
                         } catch (err) {
                             console.error(err);
-                            alert(`Error al eliminar: ${err.message}`);
+                            showNotification(`Error al eliminar: ${err.message}`, 'error');
                         }
                     });
                 }
@@ -2038,14 +2368,70 @@
         });
     </script>
 
-    <!-- Toast de Éxito Flotante -->
-    <div id="success-toast" class="hidden fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex items-center justify-center transition-all duration-300">
-        <div class="bg-white dark:bg-zinc-900 border-2 border-primary rounded-[2rem] p-lg flex flex-col items-center gap-md max-w-sm text-center shadow-2xl scale-95 transition-transform duration-300" id="success-toast-content">
-            <div class="w-20 h-20 bg-green-100 dark:bg-green-950/50 rounded-full flex items-center justify-center text-green-500 animate-bounce">
-                <span class="material-symbols-outlined text-[48px]" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+    <!-- Notification Toast Container -->
+    <div id="notification-toast" class="hidden fixed top-6 left-1/2 -translate-x-1/2 z-[10000] pointer-events-none transition-all duration-300 transform -translate-y-10 opacity-0">
+        <div id="notification-content" class="bg-white dark:bg-zinc-900 border-2 border-primary rounded-full px-6 py-3 flex items-center gap-sm shadow-2xl pointer-events-auto max-w-md">
+            <div id="notification-icon-container" class="w-8 h-8 rounded-full flex items-center justify-center text-white">
+                <span id="notification-icon" class="material-symbols-outlined text-lg">check</span>
             </div>
-            <h3 class="text-2xl font-bold text-on-surface">¡Guardado con Éxito!</h3>
-            <p class="font-body-md text-on-surface-variant leading-relaxed">¡Tu obra de arte ya está en el museo! 🎨✨</p>
+            <span id="notification-text" class="text-sm font-bold text-on-surface">Notificación</span>
+        </div>
+    </div>
+
+    <!-- Artwork Detail Modal -->
+    <div id="artwork-detail-modal" class="hidden fixed inset-0 z-[9990] bg-black/70 backdrop-blur-md flex items-center justify-center p-4 transition-all duration-300">
+        <div class="bg-white dark:bg-zinc-900 border-2 border-primary-container rounded-[2rem] shadow-2xl overflow-hidden max-w-4xl w-full max-h-[90vh] flex flex-col md:flex-row relative transform scale-95 opacity-0 transition-all duration-300" id="artwork-detail-modal-content">
+            <!-- Close Button -->
+            <button id="modal-close-btn" class="absolute top-4 right-4 z-50 w-10 h-10 rounded-full bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-colors">
+                <span class="material-symbols-outlined text-2xl">close</span>
+            </button>
+            
+            <!-- Left: Image Section -->
+            <div class="w-full md:w-1/2 bg-zinc-950 flex items-center justify-center p-4 min-h-[300px] max-h-[40vh] md:max-h-[none]">
+                <img id="modal-artwork-img" src="" alt="" class="object-contain max-w-full max-h-full rounded-lg">
+            </div>
+            
+            <!-- Right: Metadata & Details Section -->
+            <div class="w-full md:w-1/2 p-6 md:p-8 flex flex-col justify-between overflow-y-auto">
+                <div>
+                    <!-- Edit / Delete controls inside modal details if authorized -->
+                    <div id="modal-admin-controls" class="flex gap-sm mb-4 hidden">
+                        <button id="modal-edit-btn" class="px-4 py-2 rounded-full bg-sky-100 hover:bg-sky-200 text-sky-700 font-label-bold text-xs flex items-center gap-xs transition-all">
+                            <span class="material-symbols-outlined text-sm">edit</span> Editar
+                        </button>
+                        <button id="modal-delete-btn" class="px-4 py-2 rounded-full bg-red-100 hover:bg-red-200 text-red-700 font-label-bold text-xs flex items-center gap-xs transition-all">
+                            <span class="material-symbols-outlined text-sm">delete</span> Borrar
+                        </button>
+                    </div>
+
+                    <div class="flex justify-between items-start mb-2">
+                        <h2 id="modal-artwork-title" class="text-2xl md:text-3xl font-bold text-on-surface leading-tight">Título de la Obra</h2>
+                        <span id="modal-artwork-category" class="text-[10px] uppercase font-bold text-primary bg-primary-container px-2 py-1 rounded">Categoría</span>
+                    </div>
+                    
+                    <p id="modal-artwork-author" class="text-sm font-label-bold text-zinc-600 dark:text-zinc-400 mb-4">Por Autor, 8 años</p>
+                    
+                    <div class="mb-4">
+                        <span class="text-[11px] uppercase tracking-wider font-bold text-zinc-400">Estilo IA Detectado</span>
+                        <div>
+                            <span id="modal-artwork-style" class="text-sm font-body-lg text-on-surface bg-surface-container px-3 py-1 rounded-full inline-block mt-1 font-bold">Estilo</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-6">
+                        <span class="text-[11px] uppercase tracking-wider font-bold text-zinc-400">Descripción del Pequeño Artista</span>
+                        <p id="modal-artwork-description" class="text-sm font-body-md text-on-surface-variant leading-relaxed mt-2 italic bg-zinc-50 dark:bg-zinc-800/40 p-4 rounded-xl border border-zinc-100 dark:border-zinc-800">
+                            "¡Esta es mi obra maestra!"
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="flex flex-col gap-sm mt-4">
+                    <button id="modal-view-feed-btn" class="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-extrabold py-3 px-6 rounded-full flex items-center justify-center gap-sm shadow-md hover:scale-[1.02] active:scale-95 transition-all">
+                        Ver en MAMB Feed 🚀
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </body>

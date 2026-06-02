@@ -76,8 +76,10 @@ app.post('/api/artworks', authenticateToken, upload.single('image'), async (req,
             data: {
                 title: req.body.title || 'Mi Obra Maestra',
                 author: req.body.author || 'Anon',
+                age: req.body.age ? parseInt(req.body.age, 10) : null,
                 category: req.body.category || 'General',
                 aiStyle: req.body.aiStyle || 'None',
+                description: req.body.description || null,
                 imageUrl: publicUrl,
                 userId: req.user ? req.user.id : null
             }
@@ -268,7 +270,36 @@ app.put('/api/artworks/:id', authenticateToken, async (req, res) => {
     }
 });
 
-// Levantar el servidor
-app.listen(PORT, '0.0.0.0', () => {
+// Función de Auto-Seed para el Administrador (Modo Editor)
+async function seedAdmin() {
+    try {
+        const adminEmail = 'javier123@gmail.com';
+        const existingAdmin = await prisma.user.findUnique({
+            where: { email: adminEmail }
+        });
+
+        if (!existingAdmin) {
+            console.log('Sembrando usuario Administrador por defecto...');
+            const hashedPassword = await bcrypt.hash('123456', 10);
+            await prisma.user.create({
+                data: {
+                    email: adminEmail,
+                    password: hashedPassword,
+                    name: 'Administrador MAMB',
+                    role: 'ADMIN'
+                }
+            });
+            console.log('Usuario Administrador sembrado con éxito.');
+        } else {
+            console.log('El usuario Administrador ya existe en la base de datos.');
+        }
+    } catch (err) {
+        console.error('Error al realizar el Auto-Seed del Administrador:', err);
+    }
+}
+
+// Levantar el servidor e inicializar Auto-Seed
+app.listen(PORT, '0.0.0.0', async () => {
     console.log(`Servidor de MAMB Kids corriendo en http://0.0.0.0:${PORT}`);
+    await seedAdmin();
 });
