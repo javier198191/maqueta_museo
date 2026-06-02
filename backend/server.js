@@ -21,6 +21,25 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Middleware de autenticación permisivo / estricto
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    
+    if (!token) {
+        req.user = null;
+        return next();
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ error: 'Token inválido o expirado.' });
+        }
+        req.user = user;
+        next();
+    });
+};
+
 // 2. INICIALIZACIÓN LIMPIA DE SUPABASE
 let supabaseUrl = process.env.SUPABASE_URL;
 if (supabaseUrl && supabaseUrl.endsWith('/rest/v1/')) {
@@ -32,7 +51,7 @@ const supabase = createClient(supabaseUrl, process.env.SUPABASE_KEY);
 const upload = multer({ storage: multer.memoryStorage() });
 
 // POST /api/artworks - Endpoint Robusto
-app.post('/api/artworks', upload.single('image'), async (req, res) => {
+app.post('/api/artworks', authenticateToken, upload.single('image'), async (req, res) => {
     if (!req.file) return res.status(400).json({ error: 'Debes subir una imagen.' });
 
     try {
@@ -59,7 +78,8 @@ app.post('/api/artworks', upload.single('image'), async (req, res) => {
                 author: req.body.author || 'Anon',
                 category: req.body.category || 'General',
                 aiStyle: req.body.aiStyle || 'None',
-                imageUrl: publicUrl
+                imageUrl: publicUrl,
+                userId: req.user ? req.user.id : null
             }
         });
 
@@ -146,7 +166,7 @@ app.post('/api/auth/login', async (req, res) => {
 
         // Generar Token JWT
         const token = jwt.sign(
-            { id: user.id, email: user.email, name: user.name },
+            { id: user.id, email: user.email, name: user.name, role: user.role },
             JWT_SECRET,
             { expiresIn: '24h' }
         );
@@ -157,7 +177,8 @@ app.post('/api/auth/login', async (req, res) => {
             user: {
                 id: user.id,
                 email: user.email,
-                name: user.name
+                name: user.name,
+                role: user.role
             }
         });
 
@@ -182,10 +203,26 @@ app.get('/api/artworks', async (req, res) => {
     }
 });
 
-// DELETE /api/artworks/:id - Eliminar una obra (Administrador)
-app.delete('/api/artworks/:id', async (req, res) => {
+// DELETE /api/artworks/:id - Eliminar una obra (Autor o Administrador)
+app.delete('/api/artworks/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
+    if (!req.user) {
+        return res.status(401).json({ error: 'No autorizado. Inicia sesión primero.' });
+    }
     try {
+        const artwork = await prisma.artwork.findUnique({
+            where: { id }
+        });
+        
+        if (!artwork) {
+            return res.status(404).json({ error: 'Obra no encontrada.' });
+        }
+
+        // Permitir si es ADMIN o el creador de la obra
+        if (req.user.role !== 'ADMIN' && artwork.userId !== req.user.id) {
+            return res.status(403).json({ error: 'Forbidden: No tienes permisos para eliminar esta obra.' });
+        }
+
         await prisma.artwork.delete({
             where: { id }
         });
@@ -196,11 +233,27 @@ app.delete('/api/artworks/:id', async (req, res) => {
     }
 });
 
-// PUT /api/artworks/:id - Actualizar título o autor de una obra (Administrador)
-app.put('/api/artworks/:id', async (req, res) => {
+// PUT /api/artworks/:id - Actualizar título o autor de una obra (Autor o Administrador)
+app.put('/api/artworks/:id', authenticateToken, async (req, res) => {
     const { id } = req.params;
     const { title, author } = req.body;
+    if (!req.user) {
+        return res.status(401).json({ error: 'No autorizado. Inicia sesión primero.' });
+    }
     try {
+        const artwork = await prisma.artwork.findUnique({
+            where: { id }
+        });
+
+        if (!artwork) {
+            return res.status(404).json({ error: 'Obra no encontrada.' });
+        }
+
+        // Permitir si es ADMIN o el creador de la obra
+        if (req.user.role !== 'ADMIN' && artwork.userId !== req.user.id) {
+            return res.status(403).json({ error: 'Forbidden: No tienes permisos para actualizar esta obra.' });
+        }
+
         const updatedArtwork = await prisma.artwork.update({
             where: { id },
             data: {
