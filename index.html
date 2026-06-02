@@ -584,8 +584,8 @@
                 <div id="profile-logged-out" class="flex flex-col gap-sm">
                     <div class="text-center">
                         <span class="material-symbols-outlined text-[64px] text-primary" style="font-variation-settings: 'FILL' 1;">supervised_user_circle</span>
-                        <h2 class="text-2xl md:text-3xl font-bold tracking-tight text-on-surface mt-xs">Perfil para Padres</h2>
-                        <p class="font-body-md text-body-md text-on-surface-variant">Crea el perfil de tu pequeño artista para guardar y sincronizar sus obras.</p>
+                        <h2 id="auth-title" class="text-2xl md:text-3xl font-bold tracking-tight text-on-surface mt-xs">Perfil para Padres</h2>
+                        <p id="auth-subtitle" class="font-body-md text-body-md text-on-surface-variant">Crea el perfil de tu pequeño artista para guardar y sincronizar sus obras.</p>
                     </div>
                     <form id="parents-form" class="flex flex-col gap-sm mt-sm" onsubmit="event.preventDefault();">
                         <div class="flex flex-col gap-xs">
@@ -596,14 +596,18 @@
                             <label class="font-label-bold text-label-bold text-on-surface-variant" for="parent-password">Contraseña</label>
                             <input id="parent-password" type="password" placeholder="Mínimo 6 caracteres" required class="bg-surface border-2 border-outline-variant rounded-DEFAULT p-sm font-body-md text-body-md text-on-surface focus:border-primary focus:ring-4 focus:ring-primary-fixed transition-all outline-none">
                         </div>
-                        <div class="flex flex-col gap-xs">
+                        <div id="artist-name-wrapper" class="flex flex-col gap-xs">
                             <label class="font-label-bold text-label-bold text-on-surface-variant" for="artist-name">Nombre del Niño/a</label>
-                            <input id="artist-name" type="text" placeholder="Ej: Leo" required class="bg-surface border-2 border-outline-variant rounded-DEFAULT p-sm font-body-md text-body-md text-on-surface focus:border-primary focus:ring-4 focus:ring-primary-fixed transition-all outline-none">
+                            <input id="artist-name" type="text" placeholder="Ej: Leo" class="bg-surface border-2 border-outline-variant rounded-DEFAULT p-sm font-body-md text-body-md text-on-surface focus:border-primary focus:ring-4 focus:ring-primary-fixed transition-all outline-none">
                         </div>
-                        <button type="submit" class="btn-tactile-primary bg-primary text-on-primary font-headline-md text-[18px] py-md rounded-full mt-md transition-all duration-300">
+                        <button type="submit" id="auth-submit-btn" class="btn-tactile-primary bg-primary text-on-primary font-headline-md text-[18px] py-md rounded-full mt-md transition-all duration-300">
                             Registrarse y Conectar
                         </button>
                     </form>
+                    <p class="text-center text-body-md text-on-surface-variant mt-xs">
+                        <span id="auth-toggle-text">¿Ya tienes cuenta?</span>
+                        <button type="button" id="auth-toggle-btn" class="text-primary font-bold hover:underline focus:outline-none ml-xs">Inicia Sesión</button>
+                    </p>
                 </div>
                 <!-- Logged In State -->
                 <div id="profile-logged-in" class="hidden flex flex-col gap-md items-center text-center">
@@ -1037,6 +1041,37 @@
             }
         }
 
+        let isLoginMode = false;
+
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            
+            const titleEl = document.getElementById('auth-title');
+            const subtitleEl = document.getElementById('auth-subtitle');
+            const artistNameWrapper = document.getElementById('artist-name-wrapper');
+            const artistNameInput = document.getElementById('artist-name');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const toggleText = document.getElementById('auth-toggle-text');
+            const toggleBtn = document.getElementById('auth-toggle-btn');
+
+            if (isLoginMode) {
+                if (titleEl) titleEl.textContent = "Iniciar Sesión";
+                if (subtitleEl) subtitleEl.textContent = "Ingresa para acceder a las obras y configuraciones de tu artista.";
+                if (artistNameWrapper) artistNameWrapper.classList.add('hidden');
+                if (artistNameInput) artistNameInput.removeAttribute('required');
+                if (submitBtn) submitBtn.textContent = "Iniciar Sesión";
+                if (toggleText) toggleText.textContent = "¿No tienes cuenta?";
+                if (toggleBtn) toggleBtn.textContent = "Regístrate";
+            } else {
+                if (titleEl) titleEl.textContent = "Perfil para Padres";
+                if (subtitleEl) subtitleEl.textContent = "Crea el perfil de tu pequeño artista para guardar y sincronizar sus obras.";
+                if (artistNameWrapper) artistNameWrapper.classList.remove('hidden');
+                if (submitBtn) submitBtn.textContent = "Registrarse y Conectar";
+                if (toggleText) toggleText.textContent = "¿Ya tienes cuenta?";
+                if (toggleBtn) toggleBtn.textContent = "Inicia Sesión";
+            }
+        }
+
         function updateProfileUI() {
             const isLoggedIn = localStorage.getItem('mamb_user_logged_in') === 'true';
             const loggedOutDiv = document.getElementById('profile-logged-out');
@@ -1089,6 +1124,11 @@
             const logoutBtn = document.getElementById('logout-btn');
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', logout);
+            }
+
+            const authToggleBtn = document.getElementById('auth-toggle-btn');
+            if (authToggleBtn) {
+                authToggleBtn.addEventListener('click', toggleAuthMode);
             }
 
             // Configurar botones de navegación
@@ -1505,59 +1545,93 @@
                     e.preventDefault();
                     const email = document.getElementById('parent-email').value.trim();
                     const password = document.getElementById('parent-password').value.trim();
-                    const childName = document.getElementById('artist-name').value.trim();
+                    const artistNameInput = document.getElementById('artist-name');
+                    const childName = artistNameInput ? artistNameInput.value.trim() : '';
 
-                    const submitBtn = parentsForm.querySelector('button[type="submit"]');
-                    const originalBtnText = submitBtn.textContent;
-                    submitBtn.disabled = true;
-                    submitBtn.textContent = 'Conectando...';
+                    if (!isLoginMode && !childName) {
+                        alert('¡Por favor dinos el nombre del pequeño artista para crear su perfil! 🎨');
+                        return;
+                    }
+
+                    const submitBtn = document.getElementById('auth-submit-btn');
+                    const originalBtnText = submitBtn ? submitBtn.textContent : 'Conectando...';
+                    if (submitBtn) {
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = 'Conectando...';
+                    }
 
                     try {
-                        // 1. Intentar registrar al usuario
-                        let regResponse = await fetch(`${BACKEND_URL}/api/auth/register`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ email, password, name: childName })
-                        });
+                        let token, userId, role, name;
 
-                        // Si el registro falla por duplicado, lo asumimos como un login
-                        if (!regResponse.ok) {
-                            const errorData = await regResponse.json();
-                            if (errorData.error !== 'El correo electrónico ya está registrado.') {
-                                throw new Error(errorData.error || 'Error en el registro');
+                        if (isLoginMode) {
+                            // 1. Iniciar sesión directamente
+                            const loginResponse = await fetch(`${BACKEND_URL}/api/auth/login`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ email, password })
+                            });
+
+                            if (!loginResponse.ok) {
+                                const errorData = await loginResponse.json();
+                                throw new Error(errorData.error || 'Credenciales incorrectas.');
                             }
+
+                            const loginData = await loginResponse.json();
+                            token = loginData.token;
+                            userId = loginData.user.id;
+                            role = loginData.user.role;
+                            name = loginData.user.name;
+
+                        } else {
+                            // 2. Registrarse primero
+                            const regResponse = await fetch(`${BACKEND_URL}/api/auth/register`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ email, password, name: childName })
+                            });
+
+                            if (!regResponse.ok) {
+                                const errorData = await regResponse.json();
+                                // CRÍTICO: Alertar el error exacto del servidor y detener el flujo
+                                alert(errorData.error || 'Error en el registro');
+                                return;
+                            }
+
+                            // 3. Loguearse tras registrarse exitosamente de forma transparente
+                            const loginResponse = await fetch(`${BACKEND_URL}/api/auth/login`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ email, password })
+                            });
+
+                            if (!loginResponse.ok) {
+                                const errorData = await loginResponse.json();
+                                throw new Error(errorData.error || 'Error al iniciar sesión tras registro.');
+                            }
+
+                            const loginData = await loginResponse.json();
+                            token = loginData.token;
+                            userId = loginData.user.id;
+                            role = loginData.user.role;
+                            name = loginData.user.name;
                         }
-
-                        // 2. Intentar hacer Login
-                        let loginResponse = await fetch(`${BACKEND_URL}/api/auth/login`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ email, password })
-                        });
-
-                        if (!loginResponse.ok) {
-                            const errorData = await loginResponse.json();
-                            throw new Error(errorData.error || 'Credenciales incorrectas.');
-                        }
-
-                        const loginData = await loginResponse.json();
 
                         // Guardar en localStorage
-                        localStorage.setItem('mamb_token', loginData.token);
-                        localStorage.setItem('token', loginData.token);
-                        localStorage.setItem('mamb_userId', loginData.user.id);
-                        localStorage.setItem('userId', loginData.user.id);
-                        localStorage.setItem('mamb_role', loginData.user.role);
-                        localStorage.setItem('role', loginData.user.role);
+                        localStorage.setItem('mamb_token', token);
+                        localStorage.setItem('token', token);
+                        localStorage.setItem('mamb_userId', userId);
+                        localStorage.setItem('userId', userId);
+                        localStorage.setItem('mamb_role', role);
+                        localStorage.setItem('role', role);
                         localStorage.setItem('mamb_user_logged_in', 'true');
-                        localStorage.setItem('mamb_child_name', loginData.user.name);
+                        localStorage.setItem('mamb_child_name', name);
 
-                        alert(`¡Bienvenido! Sincronizado correctamente como ${loginData.user.name}.`);
+                        alert(`¡Bienvenido! Sincronizado correctamente como ${name}.`);
                         
                         // Limpiar formulario
                         document.getElementById('parent-email').value = '';
                         document.getElementById('parent-password').value = '';
-                        document.getElementById('artist-name').value = '';
+                        if (artistNameInput) artistNameInput.value = '';
 
                         // Actualizar UI del perfil
                         updateProfileUI();
@@ -1565,15 +1639,17 @@
                         // Si hay un input de nombre de artista en el laboratorio, actualizarlo
                         const authorInput = document.getElementById('authorName');
                         if (authorInput) {
-                            authorInput.value = loginData.user.name;
+                            authorInput.value = name;
                         }
 
                         showView('laboratorio');
                     } catch (err) {
                         alert(`Error al conectar: ${err.message}`);
                     } finally {
-                        submitBtn.disabled = false;
-                        submitBtn.textContent = originalBtnText;
+                        if (submitBtn) {
+                            submitBtn.disabled = false;
+                            submitBtn.textContent = originalBtnText;
+                        }
                     }
                 });
             }
