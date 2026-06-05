@@ -1,0 +1,26 @@
+{
+  "id": "api-endpoints",
+  "title": "Documentación de la API REST",
+  "description": "Todos los endpoints gestionan JSON y manejan cargas multimedia con multipart/form-data.",
+  "source": "@site/docs/api-endpoints.md",
+  "sourceDirName": ".",
+  "slug": "/api-endpoints",
+  "permalink": "/api-endpoints",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 3,
+  "frontMatter": {
+    "sidebar_position": 3
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Arquitectura de Software e Infraestructura en la Nube",
+    "permalink": "/arquitectura-infraestructura"
+  },
+  "next": {
+    "title": "Guía de Despliegue en Azure",
+    "permalink": "/despliegue-evidencias"
+  }
+}

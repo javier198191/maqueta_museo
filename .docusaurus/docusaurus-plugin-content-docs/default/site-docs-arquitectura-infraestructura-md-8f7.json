@@ -1,0 +1,26 @@
+{
+  "id": "arquitectura-infraestructura",
+  "title": "Arquitectura de Software e Infraestructura en la Nube",
+  "description": "El sistema adopta una Arquitectura Desacoplada (Monorepo), optimizando los recursos de cómputo y almacenamiento mediante servicios gestionados en Microsoft Azure.",
+  "source": "@site/docs/arquitectura-infraestructura.md",
+  "sourceDirName": ".",
+  "slug": "/arquitectura-infraestructura",
+  "permalink": "/arquitectura-infraestructura",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 2,
+  "frontMatter": {
+    "sidebar_position": 2
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Introducción al Proyecto",
+    "permalink": "/"
+  },
+  "next": {
+    "title": "Documentación de la API REST",
+    "permalink": "/api-endpoints"
+  }
+}

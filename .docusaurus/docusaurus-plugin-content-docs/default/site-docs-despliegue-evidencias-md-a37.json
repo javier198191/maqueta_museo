@@ -1,0 +1,22 @@
+{
+  "id": "despliegue-evidencias",
+  "title": "Guía de Despliegue en Azure",
+  "description": "1. Dockerización",
+  "source": "@site/docs/despliegue-evidencias.md",
+  "sourceDirName": ".",
+  "slug": "/despliegue-evidencias",
+  "permalink": "/despliegue-evidencias",
+  "draft": false,
+  "unlisted": false,
+  "tags": [],
+  "version": "current",
+  "sidebarPosition": 4,
+  "frontMatter": {
+    "sidebar_position": 4
+  },
+  "sidebar": "tutorialSidebar",
+  "previous": {
+    "title": "Documentación de la API REST",
+    "permalink": "/api-endpoints"
+  }
+}

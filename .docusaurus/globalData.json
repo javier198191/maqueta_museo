@@ -1,0 +1,48 @@
+{
+  "docusaurus-plugin-content-docs": {
+    "default": {
+      "path": "/",
+      "versions": [
+        {
+          "name": "current",
+          "label": "Next",
+          "isLast": true,
+          "path": "/",
+          "mainDocId": "introduccion",
+          "docs": [
+            {
+              "id": "api-endpoints",
+              "path": "/api-endpoints",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "arquitectura-infraestructura",
+              "path": "/arquitectura-infraestructura",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "despliegue-evidencias",
+              "path": "/despliegue-evidencias",
+              "sidebar": "tutorialSidebar"
+            },
+            {
+              "id": "introduccion",
+              "path": "/",
+              "sidebar": "tutorialSidebar"
+            }
+          ],
+          "draftIds": [],
+          "sidebars": {
+            "tutorialSidebar": {
+              "link": {
+                "path": "/",
+                "label": "introduccion"
+              }
+            }
+          }
+        }
+      ],
+      "breadcrumbs": true
+    }
+  }
+}
