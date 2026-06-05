@@ -1,36 +1,22 @@
 # MAMB Kids - Mi Obra Maestra 🎨
 
-Este proyecto es un **prototipo funcional en laboratorio** desarrollado para el Museo de Arte Moderno (MAMB). Es una plataforma interactiva diseñada para que los niños puedan digitalizar sus obras de arte, pasarlas por un filtro de Inteligencia Artificial que detecta el estilo artístico, y publicarlas en una galería interactiva estilo feed vertical.
+Prototipo funcional en laboratorio para el Museo de Arte Moderno (MAMB). Permite digitalizar arte infantil, usar IA para detectar estilos y publicarlo en un feed vertical.
 
-🔗 **[Ver Frontend en Vivo (GitHub Pages)](https://javier198191.github.io/maqueta_museo/code.html)** 🔗 **[Ver API Backend (Render)](https://tu-backend.onrender.com/api/artworks)**
+🚀 [Ver Aplicación en Vivo (Azure)](https://calm-tree-0b8607210.7.azurestaticapps.net)
 
-## 🚀 Tecnologías Utilizadas
+## Tecnologías Utilizadas
+* **Frontend:** HTML5, Tailwind CSS, JavaScript, TensorFlow.js (Teachable Machine).
+* **Backend:** Node.js, Express, Prisma ORM.
+* **Infraestructura:** Docker, Azure Web App, Azure PostgreSQL, Azure Blob Storage, Azure Static Web Apps.
 
-**Frontend:**
-* HTML5, CSS3, JavaScript Vanilla
-* Tailwind CSS (Mobile First)
-* TensorFlow.js & Teachable Machine (Clasificación de IA)
+## Estructura (Monorepo)
+* **Raíz:** Frontend (`index.html`) y Docusaurus (`/docs`).
+* **/backend:** API Express y Dockerfile.
 
-**Backend & Datos:**
-* Node.js & Express (API REST)
-* Prisma ORM
-* PostgreSQL (Hosteado en Neon.tech)
-* Supabase (Storage para imágenes)
-
-**Infraestructura:**
-* Docker & Docker Compose
-* Render (Despliegue Backend)
-* GitHub Pages (Despliegue Frontend)
-
-## 🛠️ Estructura del Proyecto (Monorepo)
-* `/` (Raíz): Contiene el Frontend estático (`index.html`).
-* `/backend`: Contiene la API en Express, el esquema de Prisma y la configuración de Docker.
-
-## ⚙️ Cómo ejecutar localmente con Docker
-
-1. Clona este repositorio.
-2. Navega a la raíz del proyecto.
-3. Asegúrate de tener tu archivo `.env` configurado con las credenciales de Neon y Supabase.
-4. Ejecuta el contenedor:
+## Ejecución Local
+1. Configurar `.env` en `/backend`.
+2. Ejecutar: 
    ```bash
    docker compose up --build -d
+   ```
+3. Backend disponible en http://localhost:3001
