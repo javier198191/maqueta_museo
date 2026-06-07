@@ -2,7 +2,7 @@
 
 Prototipo funcional en laboratorio para el Museo de Arte Moderno (MAMB). Permite digitalizar arte infantil, usar IA para detectar estilos y publicarlo en un feed vertical.
 
-🚀 [Ver Aplicación en Vivo (Azure)](https://calm-tree-0b8607210.7.azurestaticapps.net)
+🔗 **[Ver Aplicación en Vivo (Dominio Oficial)](https://www.tecnologiaweb.store)**
 
 ## Tecnologías Utilizadas
 * **Frontend:** HTML5, Tailwind CSS, JavaScript, TensorFlow.js (Teachable Machine).
